@@ -1,2 +1,5 @@
 # ComfyUI_BaiKong_Node
- ComfyUI Nodes
+
+Get the colors palette from image
+
+

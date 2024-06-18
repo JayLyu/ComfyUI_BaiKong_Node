@@ -23,9 +23,7 @@ class BK_Img2Color:
         return {
             "required": {
                 "input_image": ("IMAGE",),
-            },
-            "optional": {
-                "num_colors": ("INT", {"default": 5}),
+                "num_colors": ("INT", {"default": 3, "min": 1}),
                 "get_complementary": (
                     "BOOLEAN",
                     {
@@ -35,7 +33,7 @@ class BK_Img2Color:
                     },
                 ),
                 "k_means_algorithm": (
-                    ["lloyd", "elkan", "auto", "full"],
+                    ["lloyd", "elkan"],
                     {
                         "default": "lloyd",
                     },
@@ -56,42 +54,30 @@ class BK_Img2Color:
                     },
                 ),
             },
-            "hidden": {
-                "unique_id": "UNIQUE_ID",
-                "extra_pnginfo": "EXTRA_PNGINFO",
-                "output_text": (
-                    "STRING",
-                    {
-                        "default": "",
-                    },
-                ),
-            },
         }
 
     RETURN_TYPES = (
         "STRING",
-        "IMAGE"
+        # "IMAGE"
     )
-    RETURN_NAMES = (
-        "hex_colors",
-        "preview"
-    )
+    # RETURN_NAMES = (
+    #     "hex_colors",
+    #     "preview"
+    # )
     FUNCTION = "main"
     OUTPUT_NODE = True
 
     def main(
         self,
-        input_image: torch.Tensor,  # [Batch_n, H, W, 3-channel]
+        input_image: torch.Tensor,
         num_colors: int = 5,
         k_means_algorithm: str = "lloyd",
         accuracy: int = 80,
         get_complementary: bool = False,
         exclude_colors: str = "",
-        unique_id=None,
-        extra_pnginfo=None,
     ) -> Tuple[str, ...]:
         
-        print(input_image)
+        # print(input_image)
 
         if exclude_colors.strip():
             self.exclude = exclude_colors.strip().split(",")
@@ -116,8 +102,8 @@ class BK_Img2Color:
         hex_colors = [
             f"#{color[0]:02x}{color[1]:02x}{color[2]:02x}" for color in rgb]
 
-        color_blocks = self.generate_color_blocks(
-            self.join_and_exclude(hex_colors))
+        # color_blocks = self.generate_color_blocks(
+        #     self.join_and_exclude(hex_colors))
         
         # palette_image, palette = self.generate_palette(
         #     img = input_image, 
@@ -129,7 +115,10 @@ class BK_Img2Color:
         #     mode=mode.lower()
         #     )
 
-        return (self.join_and_exclude(hex_colors), color_blocks)
+        return (
+            self.join_and_exclude(hex_colors), 
+            # color_blocks
+            )
 
     def join_and_exclude(self, colors: List[str]) -> str:
         return ", ".join(
@@ -161,7 +150,8 @@ class BK_Img2Color:
 
     def generate_color_blocks(self, color_string: str) -> np.ndarray:
         colors = color_string.split(', ')
-        fig, axs = plt.subplots(1, len(colors), figsize=(len(colors)*2, 2))
+        fig, axs = plt.subplots(1, len(colors), figsize=(len(colors)*2, 2), squeeze=False)
+        axs = axs.flatten()  # 将 axs 转换为一维数组，便于迭代
 
         for ax, color in zip(axs, colors):
             ax.imshow(np.full((10, 10, 3), np.array(
@@ -170,10 +160,6 @@ class BK_Img2Color:
 
         plt.tight_layout()
         plt.savefig('d:\\color_blocks.png')
-
-        # palette_size = (20, 20)
-        # palette = Image.new('RGB', palette_size, color='white')
-        # draw = ImageDraw.Draw(palette)
 
         return plt
     
