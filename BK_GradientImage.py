@@ -1,14 +1,14 @@
 import torch
 import numpy as np
 from PIL import Image, ImageDraw
+from torchvision.transforms import ToPILImage
+
 
 def pil2tensor(image):
-    return torch.from_numpy(np.array(image).astype(np.float32) / 255.0).unsqueeze(0) 
+    return torch.from_numpy(np.array(image).astype(np.float32) / 255.0).unsqueeze(0)
+
 
 class BK_GradientImage:
-
-    def __init__(self):
-        pass
 
     @classmethod
     def INPUT_TYPES(s):
@@ -58,7 +58,7 @@ class BK_GradientImage:
 
         r, g, b = int(hex_color[1:3], 16), int(
             hex_color[3:5], 16), int(hex_color[5:7], 16)
-        
+
         if direction == 'horizontal':
             start_x = int(width * start_position)
             midpoint_x = int(width * end_position)
@@ -76,20 +76,27 @@ class BK_GradientImage:
             # Fill the rest from midpoint_y to the end with solid color
             draw.rectangle([0, midpoint_y, width, height], fill=(r, g, b, 255))
 
+        # 旋转图像
         if reverse:
             image = image.rotate(180)
+
         image_out = pil2tensor(image)
 
         return (image_out,)
 
 
-# 示例使用
-# hex_color = "#34C3EB"
-# size = (400, 400)
-# start_position = 0.5  # 渐变从10%的位置开始
-# end_position = 0.7  # 渐变在90%的位置结束
-# direction = 'vertical'  # 渐变方向为垂直
-
-# image = generate_gradient_image(
-#     hex_color, size, start_position, end_position, direction)
-# image.show()
+if __name__ == "__main__":
+    BK_GradientImage = BK_GradientImage()
+    image = BK_GradientImage.main(
+        hex_color="#34C3EB",
+        width=512,
+        height=512,
+        start_position=0.5,
+        end_position=1,
+        direction='vertical',
+        reverse=False
+    )
+    # 把 Tensor 转化回 PIL 图片
+    image_pil = ToPILImage()(image[0].squeeze(0) * 255).convert('RGBA')
+    # 显示图片
+    image_pil.show()

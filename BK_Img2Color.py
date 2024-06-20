@@ -16,13 +16,15 @@ sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 
 
 class BK_Img2Color:
-    CATEGORY = "⭐️Baikong"
-
+    
     @classmethod
     def INPUT_TYPES(s):
+        
         return {
             "required": {
                 "input_image": ("IMAGE",),
+            },
+            "optional": {
                 "num_colors": ("INT", {"default": 3, "min": 1}),
                 "get_complementary": (
                     "BOOLEAN",
@@ -53,17 +55,14 @@ class BK_Img2Color:
                         "default": "",
                     },
                 ),
-            },
+            }
         }
 
     RETURN_TYPES = (
         "STRING",
         # "IMAGE"
     )
-    # RETURN_NAMES = (
-    #     "hex_colors",
-    #     "preview"
-    # )
+    CATEGORY = "⭐️Baikong"
     FUNCTION = "main"
     OUTPUT_NODE = True
 
@@ -76,8 +75,6 @@ class BK_Img2Color:
         get_complementary: bool = False,
         exclude_colors: str = "",
     ) -> Tuple[str, ...]:
-        
-        # print(input_image)
 
         if exclude_colors.strip():
             self.exclude = exclude_colors.strip().split(",")
@@ -91,7 +88,8 @@ class BK_Img2Color:
         self.webcolor_dict.update(webcolors.CSS2_HEX_TO_NAMES,)
         self.webcolor_dict.update(webcolors.CSS21_HEX_TO_NAMES,)
         self.webcolor_dict.update(webcolors.HTML4_HEX_TO_NAMES,)
-        print(self.webcolor_dict)
+        
+        # print(self.webcolor_dict)
 
         original_colors = self.interrogate_colors(input_image, num_colors)
         rgb = self.ndarrays_to_rgb(original_colors)
@@ -159,7 +157,7 @@ class BK_Img2Color:
             ax.axis('off')
 
         plt.tight_layout()
-        plt.savefig('d:\\color_blocks.png')
+        # plt.savefig('d:\\color_blocks.png')
 
         return plt
     
@@ -259,7 +257,7 @@ class BK_Img2Color:
 
         return palette, '\n'.join(hex_palette)
 
-
-# test = BK_Img2Color()
-# input = "E:\ComfyUI\input\ice.png"
-# print(test.main(input,  5, "lloyd", 80, False, "", None, None))
+if __name__ == "__main__":
+    BK_Img2Color = BK_Img2Color()
+    input = "E:\ComfyUI\input\ice.png"
+    print(BK_Img2Color.main(input,  3, "lloyd", 80, False, ""))
