@@ -25,7 +25,7 @@ class BK_Img2Color:
                 "input_image": ("IMAGE",),
             },
             "optional": {
-                "num_colors": ("INT", {"default": 3, "min": 1}),
+                "num_colors": ("INT", {"default": 1, "min": 1}),
                 "get_complementary": (
                     "BOOLEAN",
                     {
@@ -43,7 +43,7 @@ class BK_Img2Color:
                 "accuracy": (
                     "INT",
                     {
-                        "default": 60,
+                        "default": 80,
                         "display": "slider",
                         "min": 1,
                         "max": 100,
