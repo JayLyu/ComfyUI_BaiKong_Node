@@ -2,7 +2,7 @@
 name = "comfyui_baikong_node"
 description = "Nodes:BK Img To Color, BK Color Selector"
 version = "1.0.2"
-license = "LICENSE"
+license = { file = "LICENSE" }
 dependencies = ["colornamer>=0.2.4", "scikit_learn>=1.4.0", "webcolors==1.11"]
 
 [project.urls]
