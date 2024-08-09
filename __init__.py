@@ -16,3 +16,5 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "BK_GradientImage": "BK Gradient Image",
     "BK_ColorLimit": "BK Color Limit"
 }
+
+WEB_DIRECTORY = "./web"

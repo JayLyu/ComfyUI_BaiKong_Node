@@ -16,28 +16,22 @@ sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 
 
 class BK_Img2Color:
-    
+
     @classmethod
     def INPUT_TYPES(s):
-        
+
         return {
             "required": {
                 "input_image": ("IMAGE",),
             },
             "optional": {
                 "num_colors": ("INT", {"default": 1, "min": 1}),
-                "get_complementary": (
+                "get_complementary_color": (
                     "BOOLEAN",
                     {
                         "default": False,
-                        "label_off": "Get Original Colors",
-                        "label_on": "Get Complementary Colors",
-                    },
-                ),
-                "k_means_algorithm": (
-                    ["lloyd", "elkan"],
-                    {
-                        "default": "lloyd",
+                        "label_off": "false",
+                        "label_on": "true",
                     },
                 ),
                 "accuracy": (
@@ -58,10 +52,7 @@ class BK_Img2Color:
             }
         }
 
-    RETURN_TYPES = (
-        "STRING",
-        # "IMAGE"
-    )
+    RETURN_TYPES = ("STRING", )
     CATEGORY = "⭐️Baikong"
     FUNCTION = "main"
     OUTPUT_NODE = True
@@ -70,9 +61,8 @@ class BK_Img2Color:
         self,
         input_image: torch.Tensor,
         num_colors: int = 5,
-        k_means_algorithm: str = "lloyd",
         accuracy: int = 80,
-        get_complementary: bool = False,
+        get_complementary_color: bool = False,
         exclude_colors: str = "",
     ) -> Tuple[str, ...]:
 
@@ -83,18 +73,18 @@ class BK_Img2Color:
             self.exclude = []
 
         self.num_iterations = int(512 * (accuracy / 100))
-        self.algorithm = k_means_algorithm
+        self.algorithm = "lloyd"
         self.webcolor_dict = webcolors.CSS3_HEX_TO_NAMES
         self.webcolor_dict.update(webcolors.CSS2_HEX_TO_NAMES,)
         self.webcolor_dict.update(webcolors.CSS21_HEX_TO_NAMES,)
         self.webcolor_dict.update(webcolors.HTML4_HEX_TO_NAMES,)
-        
+
         # print(self.webcolor_dict)
 
         original_colors = self.interrogate_colors(input_image, num_colors)
         rgb = self.ndarrays_to_rgb(original_colors)
 
-        if get_complementary:
+        if get_complementary_color:
             rgb = self.rgb_to_complementary(rgb)
 
         hex_colors = [
@@ -102,21 +92,20 @@ class BK_Img2Color:
 
         # color_blocks = self.generate_color_blocks(
         #     self.join_and_exclude(hex_colors))
-        
+
         # palette_image, palette = self.generate_palette(
-        #     img = input_image, 
-        #     n_colors=num_colors, 
-        #     cell_size=128, 
-        #     padding=10, 
-        #     font_path="", 
-        #     font_size=15, 
+        #     img = input_image,
+        #     n_colors=num_colors,
+        #     cell_size=128,
+        #     padding=10,
+        #     font_path="",
+        #     font_size=15,
         #     mode=mode.lower()
         #     )
+        
+        out = self.join_and_exclude(hex_colors)
 
-        return (
-            self.join_and_exclude(hex_colors), 
-            # color_blocks
-            )
+        return {"ui": {"text": (out,)}, "result": (out,)}
 
     def join_and_exclude(self, colors: List[str]) -> str:
         return ", ".join(
@@ -148,7 +137,8 @@ class BK_Img2Color:
 
     def generate_color_blocks(self, color_string: str) -> np.ndarray:
         colors = color_string.split(', ')
-        fig, axs = plt.subplots(1, len(colors), figsize=(len(colors)*2, 2), squeeze=False)
+        fig, axs = plt.subplots(1, len(colors), figsize=(
+            len(colors)*2, 2), squeeze=False)
         axs = axs.flatten()  # 将 axs 转换为一维数组，便于迭代
 
         for ax, color in zip(axs, colors):
@@ -160,13 +150,15 @@ class BK_Img2Color:
         # plt.savefig('d:\\color_blocks.png')
 
         return plt
-    
-    def generate_palette(self, img:torch.Tensor, n_colors=16, cell_size=128, padding=0, font_path=None, font_size=15, mode='chart'):
 
-        img = img.resize((img.width // 2, img.height // 2), resample=Image.BILINEAR)
+    def generate_palette(self, img: torch.Tensor, n_colors=16, cell_size=128, padding=0, font_path=None, font_size=15, mode='chart'):
+
+        img = img.resize((img.width // 2, img.height // 2),
+                         resample=Image.BILINEAR)
         pixels = np.array(img)
         pixels = pixels.reshape((-1, 3))
-        kmeans = KMeans(n_clusters=n_colors, random_state=0, n_init='auto').fit(pixels)
+        kmeans = KMeans(n_clusters=n_colors, random_state=0,
+                        n_init='auto').fit(pixels)
         cluster_centers = np.uint8(kmeans.cluster_centers_)
 
         # Get the sorted indices based on luminance
@@ -250,12 +242,15 @@ class BK_Img2Color:
                 text_x = cell_x + (cell_width / 2)
                 text_y = cell_y + cell_height + padding
 
-                draw.text((text_x + 1, text_y + 1), f"R: {color[0]} G: {color[1]} B: {color[2]}", font=font, fill='black', anchor='ms')
-                draw.text((text_x, text_y), f"R: {color[0]} G: {color[1]} B: {color[2]}", font=font, fill='white', anchor='ms')
+                draw.text((text_x + 1, text_y + 1),
+                          f"R: {color[0]} G: {color[1]} B: {color[2]}", font=font, fill='black', anchor='ms')
+                draw.text(
+                    (text_x, text_y), f"R: {color[0]} G: {color[1]} B: {color[2]}", font=font, fill='white', anchor='ms')
 
             hex_palette.append('#%02x%02x%02x' % color)
 
         return palette, '\n'.join(hex_palette)
+
 
 if __name__ == "__main__":
     BK_Img2Color = BK_Img2Color()

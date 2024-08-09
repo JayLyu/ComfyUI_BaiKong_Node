@@ -46,7 +46,8 @@ class BK_ColorSelector:
         # 去掉多余的空格
         selected_color = selected_color.replace(" ", "")
 
-        return (selected_color,)
+        out = selected_color
+        return {"ui": {"text": (out,)}, "result": (out,)}
 
 
 if __name__ == "__main__":

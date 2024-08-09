@@ -114,10 +114,8 @@ class BK_ColorLimit:
         # 构造 HSL 的字符串表示
         hsl_string = f"({h}, {s_new}, {l_new})"
 
-        return (
-            hex_new,
-            # rgb_string, hsl_string,
-        )
+        out = hex_new
+        return {"ui": {"text": (out,)}, "result": (out,)}
 
 
 if __name__ == "__main__":
