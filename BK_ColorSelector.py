@@ -29,7 +29,7 @@ class BK_ColorSelector:
     CATEGORY = "⭐️Baikong"
     RETURN_TYPES = ("STRING",)
     FUNCTION = "select_color"
-    OUTPUT_NODE = True
+    OUTPUT_NODE = False
 
     def select_color(
         self,

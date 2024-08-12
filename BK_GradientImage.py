@@ -41,7 +41,7 @@ class BK_GradientImage:
     CATEGORY = "⭐️Baikong"
     RETURN_TYPES = ("IMAGE",)
     FUNCTION = "main"
-    OUTPUT_NODE = True
+    OUTPUT_NODE = False
 
     def main(
         self,
