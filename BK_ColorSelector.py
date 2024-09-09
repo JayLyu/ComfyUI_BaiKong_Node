@@ -1,4 +1,3 @@
-
 class BK_ColorSelector:
 
     @classmethod
@@ -30,6 +29,7 @@ class BK_ColorSelector:
     RETURN_TYPES = ("STRING",)
     FUNCTION = "select_color"
     OUTPUT_NODE = False
+    DESCRIPTION = "从输入的多个十六进制颜色中，根据指定的索引选择一个颜色；输入的内容需使用英文逗号分隔"
 
     def select_color(
         self,

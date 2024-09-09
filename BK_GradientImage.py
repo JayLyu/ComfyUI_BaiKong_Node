@@ -42,6 +42,7 @@ class BK_GradientImage:
     RETURN_TYPES = ("IMAGE",)
     FUNCTION = "main"
     OUTPUT_NODE = False
+    DESCRIPTION = "生成指定尺寸的渐变图像，支持水平或垂直方向，可调整起始位置、结束位置和颜色"
 
     def main(
         self,

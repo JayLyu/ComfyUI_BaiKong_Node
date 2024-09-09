@@ -62,13 +62,9 @@ class BK_ColorLimit:
         }
 
     CATEGORY = "⭐️Baikong"
-    RETURN_TYPES = (
-        "STRING",
-        # "STRING","STRING"
-    )
-    # RETURN_NAMES = ("hex", "rgb", "hsl", )
+    RETURN_TYPES = ( "STRING", )
     FUNCTION = "color_limit"
-    # OUTPUT_NODE = True
+    DESCRIPTION = "输入十六进制颜色，并根据设定的饱和度和亮度范围限制，生成新的颜色"
 
     def color_limit(
         self,
@@ -95,12 +91,6 @@ class BK_ColorLimit:
 
         # l 的值必须在 brightness_start 和 brightness_end 之间
         l_new = max(brightness_start, min(l, brightness_end))
-
-        # print(f"hue:{h}")
-        # print(
-        #     f"saturation:{saturation_start} ~ {saturation_end}, value:{s}→{s_new}")
-        # print(
-        #     f"brightness:{brightness_start} ~ {brightness_end}, value:{l}→{l_new}")
 
         # 将 hsl 的值转换为 rgb
         rgb_new = hsl_to_rgb((h, s_new, l_new))

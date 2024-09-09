@@ -1,4 +1,3 @@
-
 from typing import Tuple, List
 import sys
 import os
@@ -56,6 +55,7 @@ class BK_Img2Color:
     CATEGORY = "⭐️Baikong"
     FUNCTION = "main"
     OUTPUT_NODE = True
+    DESCRIPTION = "从输入图像中提取主要颜色，可指定颜色数量，支持排除特定颜色，并可选择生成互补色"
 
     def main(
         self,
