@@ -1,3 +1,5 @@
+# 参考自 https://github.com/christian-byrne/img2colors-comfyui-node
+
 from typing import Tuple, List
 import sys
 import os
@@ -17,14 +19,13 @@ sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 class BK_Img2Color:
 
     @classmethod
-    def INPUT_TYPES(s):
-
+    def INPUT_TYPES(cls):
         return {
             "required": {
                 "input_image": ("IMAGE",),
             },
             "optional": {
-                "num_colors": ("INT", {"default": 1, "min": 1}),
+                "num_colors": ("INT", {"default": 1, "min": 1, }),
                 "get_complementary_color": (
                     "BOOLEAN",
                     {
@@ -48,38 +49,29 @@ class BK_Img2Color:
                         "default": "",
                     },
                 ),
+                "select_color": ("INT", {
+                    "default": 1,
+                    "min": 1,
+                }),
             }
         }
 
-    RETURN_TYPES = ("STRING", )
+    RETURN_TYPES = ("STRING", "STRING",)
+    RETURN_NAMES = ("COLORS", "SELECT_COLOR",)
     CATEGORY = "⭐️Baikong"
     FUNCTION = "main"
     OUTPUT_NODE = True
     DESCRIPTION = "从输入图像中提取主要颜色，可指定颜色数量，支持排除特定颜色，并可选择生成互补色"
 
-    def main(
-        self,
-        input_image: torch.Tensor,
-        num_colors: int = 5,
-        accuracy: int = 80,
-        get_complementary_color: bool = False,
-        exclude_colors: str = "",
-    ) -> Tuple[str, ...]:
+    def __init__(self):
+        self.webcolor_dict = {**webcolors.CSS3_HEX_TO_NAMES, **webcolors.CSS2_HEX_TO_NAMES,
+                              **webcolors.CSS21_HEX_TO_NAMES, **webcolors.HTML4_HEX_TO_NAMES}
 
-        if exclude_colors.strip():
-            self.exclude = exclude_colors.strip().split(",")
-            self.exclude = [color.strip().lower() for color in self.exclude]
-        else:
-            self.exclude = []
-
+    def main(self, input_image: torch.Tensor, num_colors: int = 5, accuracy: int = 80,
+             get_complementary_color: bool = False, exclude_colors: str = "", select_color: int = 1) -> Tuple[str, str]:
+        self.exclude = [color.strip().lower() for color in exclude_colors.strip().split(
+            ",")] if exclude_colors.strip() else []
         self.num_iterations = int(512 * (accuracy / 100))
-        self.algorithm = "lloyd"
-        self.webcolor_dict = webcolors.CSS3_HEX_TO_NAMES
-        self.webcolor_dict.update(webcolors.CSS2_HEX_TO_NAMES,)
-        self.webcolor_dict.update(webcolors.CSS21_HEX_TO_NAMES,)
-        self.webcolor_dict.update(webcolors.HTML4_HEX_TO_NAMES,)
-
-        # print(self.webcolor_dict)
 
         original_colors = self.interrogate_colors(input_image, num_colors)
         rgb = self.ndarrays_to_rgb(original_colors)
@@ -89,23 +81,15 @@ class BK_Img2Color:
 
         hex_colors = [
             f"#{color[0]:02x}{color[1]:02x}{color[2]:02x}" for color in rgb]
-
-        # color_blocks = self.generate_color_blocks(
-        #     self.join_and_exclude(hex_colors))
-
-        # palette_image, palette = self.generate_palette(
-        #     img = input_image,
-        #     n_colors=num_colors,
-        #     cell_size=128,
-        #     padding=10,
-        #     font_path="",
-        #     font_size=15,
-        #     mode=mode.lower()
-        #     )
-        
         out = self.join_and_exclude(hex_colors)
 
-        return {"ui": {"text": (out,)}, "result": (out,)}
+        # 处理 select_color
+        color_list = out.split(", ")
+        selected_color = color_list[-1] if select_color > len(
+            color_list) else color_list[select_color - 1]
+
+        # 指定的输出格式 {"ui": {"text": (value1, value2)}, "result":  (value1, value2)}
+        return {"ui": {"text": (out, selected_color)}, "result": (out, selected_color)}
 
     def join_and_exclude(self, colors: List[str]) -> str:
         return ", ".join(
@@ -123,16 +107,9 @@ class BK_Img2Color:
 
     def interrogate_colors(self, image: torch.Tensor, num_colors: int) -> List[ndarray]:
         pixels = image.view(-1, image.shape[-1]).numpy()
-        colors = (
-            KMeans(
-                n_clusters=num_colors,
-                algorithm=self.algorithm,
-                max_iter=self.num_iterations,
-            )
-            .fit(pixels)
-            .cluster_centers_
-            * 255
-        )
+        kmeans = KMeans(n_clusters=num_colors, algorithm="lloyd",
+                        max_iter=self.num_iterations, n_init=10)
+        colors = kmeans.fit(pixels).cluster_centers_ * 255
         return colors
 
     def generate_color_blocks(self, color_string: str) -> np.ndarray:
@@ -253,6 +230,12 @@ class BK_Img2Color:
 
 
 if __name__ == "__main__":
-    BK_Img2Color = BK_Img2Color()
-    input = "E:\ComfyUI\input\ice.png"
-    print(BK_Img2Color.main(input,  3, "lloyd", 80, False, ""))
+    bk_img2color = BK_Img2Color()
+    input_path = r"E:\\ComfyUI\\input\\ice.png"
+    input_image = Image.open(input_path)
+    input_tensor = torch.from_numpy(
+        np.array(input_image)).permute(2, 0, 1).float() / 255.0
+    result = bk_img2color.main(input_tensor, num_colors=3, accuracy=80,
+                               get_complementary_color=False, exclude_colors="", select_color=2)
+    print(f"所有颜色: {result[0]}")
+    print(f"选中的颜色: {result[1]}")

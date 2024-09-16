@@ -62,7 +62,7 @@ class BK_ColorLimit:
         }
 
     CATEGORY = "⭐️Baikong"
-    RETURN_TYPES = ( "STRING", )
+    RETURN_TYPES = ("STRING", )
     FUNCTION = "color_limit"
     DESCRIPTION = "输入十六进制颜色，并根据设定的饱和度和亮度范围限制，生成新的颜色"
 
@@ -75,8 +75,8 @@ class BK_ColorLimit:
         brightness_end: float = 0.5,
     ):
         # 将 hex_color 转换成 rgb 元组
-        hex_color = hex_color.lstrip('#')
-        rgb_color = tuple(int(hex_color[i:i+2], 16) for i in (0, 2, 4))
+        rgb_color = tuple(int(hex_color.lstrip(
+            '#')[i:i+2], 16) for i in (0, 2, 4))
 
         # 将 rgb 转换成 hsl
         h, s, l = rgb_to_hsl(rgb_color)
@@ -86,10 +86,8 @@ class BK_ColorLimit:
         s = round(s, 6)
         l = round(l, 6)
 
-        # s 的值必须在 saturation_start 和 saturation_end 之间
+        # s 和 l 的值必须在指定范围内
         s_new = max(saturation_start, min(s, saturation_end))
-
-        # l 的值必须在 brightness_start 和 brightness_end 之间
         l_new = max(brightness_start, min(l, brightness_end))
 
         # 将 hsl 的值转换为 rgb
@@ -98,14 +96,7 @@ class BK_ColorLimit:
         # 构造新的 hex 表示
         hex_new = '#{:02x}{:02x}{:02x}'.format(*rgb_new)
 
-        # 构造 RGB 的字符串表示
-        rgb_string = f"({rgb_new[0]}, {rgb_new[1]}, {rgb_new[2]})"
-
-        # 构造 HSL 的字符串表示
-        hsl_string = f"({h}, {s_new}, {l_new})"
-
-        out = hex_new
-        return {"ui": {"text": (out,)}, "result": (out,)}
+        return {"ui": {"text": (hex_new,)}, "result": (hex_new,)}
 
 
 if __name__ == "__main__":

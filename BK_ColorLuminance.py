@@ -50,22 +50,19 @@ class BK_ColorLuminance:
         light_text_hex_color = light_text_hex_color or "#FFFFFF"
         dark_text_hex_color = dark_text_hex_color or "#000000"
 
-        bg_r, bg_g, bg_b = int(bg_hex_color[1:3], 16), int(
-            bg_hex_color[3:5], 16), int(bg_hex_color[5:7], 16)
+        bg_r, bg_g, bg_b = self.hex_to_rgb(bg_hex_color)
         bg_luminance = relative_luminance(bg_r, bg_g, bg_b)
 
-        print(
-            f"背景: {bg_hex_color}, 明度: {bg_luminance:.4f}, 阈值: {luminance_threshold}")
+        print(f"背景: {bg_hex_color}, 明度: {bg_luminance:.4f}, 阈值: {luminance_threshold}")
 
-        if bg_luminance > luminance_threshold:
-            text_color = dark_text_hex_color
-            print(f"选择暗色文本: {text_color}")
-        else:
-            text_color = light_text_hex_color
-            print(f"选择亮色文本: {text_color}")
+        text_color = dark_text_hex_color if bg_luminance > luminance_threshold else light_text_hex_color
+        print(f"选择{'暗' if bg_luminance > luminance_threshold else '亮'}色文本: {text_color}")
 
         return {"ui": {"text": (bg_hex_color, text_color)}, "result": (bg_hex_color, text_color)}
 
+    @staticmethod
+    def hex_to_rgb(hex_color):
+        return tuple(int(hex_color[i:i+2], 16) for i in (1, 3, 5))
 
 # 测试代码
 if __name__ == "__main__":
