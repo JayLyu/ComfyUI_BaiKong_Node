@@ -1,4 +1,2 @@
-colornamer==0.2.4
-scikit_learn==1.4.0
-webcolors==1.11
+scikit_learn>=1.4.0
 matplotlib
