@@ -1,11 +1,7 @@
-import torch
-import numpy as np
 from PIL import Image, ImageDraw
 from torchvision.transforms import ToPILImage
 
-
-def pil2tensor(image):
-    return torch.from_numpy(np.array(image).astype(np.float32) / 255.0).unsqueeze(0)
+from .functions_image import pil2tensor
 
 
 class BK_GradientImage:
@@ -38,10 +34,10 @@ class BK_GradientImage:
             },
         }
 
-    CATEGORY = "⭐️Baikong"
     RETURN_TYPES = ("IMAGE",)
     FUNCTION = "main"
     OUTPUT_NODE = False
+    CATEGORY = "⭐️ Baikong"
     DESCRIPTION = "生成指定尺寸的渐变图像，支持水平或垂直方向，可调整起始位置、结束位置和颜色"
 
     @staticmethod
@@ -86,18 +82,18 @@ class BK_GradientImage:
         return (pil2tensor(image),)
 
 
-if __name__ == "__main__":
-    BK_GradientImage = BK_GradientImage()
-    image = BK_GradientImage.main(
-        hex_color="#34C3EB",
-        width=512,
-        height=512,
-        start_position=0.5,
-        end_position=1,
-        direction='vertical',
-        reverse=False
-    )
-    # 把 Tensor 转化回 PIL 图片
-    image_pil = ToPILImage()(image[0].squeeze(0) * 255).convert('RGBA')
-    # 显示图片
-    image_pil.show()
+# if __name__ == "__main__":
+#     BK_GradientImage = BK_GradientImage()
+#     image = BK_GradientImage.main(
+#         hex_color="#34C3EB",
+#         width=512,
+#         height=512,
+#         start_position=0.5,
+#         end_position=1,
+#         direction='vertical',
+#         reverse=False
+#     )
+#     # 把 Tensor 转化回 PIL 图片
+#     image_pil = ToPILImage()(image[0].squeeze(0) * 255).convert('RGBA')
+#     # 显示图片
+#     image_pil.show()

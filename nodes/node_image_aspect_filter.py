@@ -2,14 +2,7 @@ import torch
 from PIL import Image
 import numpy as np
 import base64
-
-# Tensor to PIL
-def tensor2pil(image):
-    return Image.fromarray(np.clip(255. * image.cpu().numpy().squeeze(), 0, 255).astype(np.uint8))
-
-# Convert PIL to Tensor
-def pil2tensor(image):
-    return torch.from_numpy(np.array(image).astype(np.float32) / 255.0).unsqueeze(0)
+from .functions_image import pil2tensor, tensor2pil
 
 class BK_ImageAspectFilter:
 
@@ -26,7 +19,8 @@ class BK_ImageAspectFilter:
 
     RETURN_TYPES = ("IMAGE",)
     FUNCTION = "filter"
-    CATEGORY = "⭐️Baikong"
+    CATEGORY = "⭐️ Baikong"
+    DESCRIPTION = "过滤特定比例的图像"
 
     def filter(self, images, min_aspect_ratio: float, max_aspect_ratio: float, default_image):
         valid_images = []

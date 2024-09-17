@@ -12,6 +12,7 @@ import numpy as np
 
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 
+
 class BK_Img2Color:
 
     @classmethod
@@ -54,7 +55,7 @@ class BK_Img2Color:
 
     RETURN_TYPES = ("STRING", "STRING",)
     RETURN_NAMES = ("COLORS", "SELECT_COLOR",)
-    CATEGORY = "⭐️Baikong"
+    CATEGORY = "⭐️ Baikong"
     FUNCTION = "main"
     OUTPUT_NODE = True
     DESCRIPTION = "从输入图像中提取主要颜色，可指定颜色数量，支持排除特定颜色，并可选择生成互补色"
@@ -108,13 +109,13 @@ class BK_Img2Color:
         return colors
 
 
-if __name__ == "__main__":
-    bk_img2color = BK_Img2Color()
-    input_path = r"./GetImageColor.png"
-    input_image = Image.open(input_path)
-    input_tensor = torch.from_numpy(
-        np.array(input_image)).permute(2, 0, 1).float() / 255.0
-    result = bk_img2color.main(input_tensor, num_colors=3, accuracy=80,
-                               get_complementary_color=False, exclude_colors="", select_color=2)
-    print(f"所有颜色: {result[0]}")
-    print(f"选中的颜色: {result[1]}")
+# if __name__ == "__main__":
+#     bk_img2color = BK_Img2Color()
+#     input_path = r"./GetImageColor.png"
+#     input_image = Image.open(input_path)
+#     input_tensor = torch.from_numpy(
+#         np.array(input_image)).permute(2, 0, 1).float() / 255.0
+#     result = bk_img2color.main(input_tensor, num_colors=3, accuracy=80,
+#                                get_complementary_color=False, exclude_colors="", select_color=2)
+#     print(f"所有颜色: {result[0]}")
+#     print(f"选中的颜色: {result[1]}")

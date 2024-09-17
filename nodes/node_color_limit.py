@@ -1,22 +1,4 @@
-import colorsys
-
-
-def rgb_to_hsl(rgb):
-    # 将 rgb 元组转换成 hsl
-    r, g, b = rgb
-    h, l, s = colorsys.rgb_to_hls(r / 255.0, g / 255.0, b / 255.0)
-    return h, s, l
-
-
-def hsl_to_rgb(hsl):
-    # 将 hsl 元组转换成 rgb
-    h, s, l = hsl
-    r, g, b = colorsys.hls_to_rgb(h, l, s)
-    r = int(r * 255.0)
-    g = int(g * 255.0)
-    b = int(b * 255.0)
-    return r, g, b
-
+from .functions_color import rgb_to_hsl, hsl_to_rgb
 
 class BK_ColorLimit:
 
@@ -61,7 +43,7 @@ class BK_ColorLimit:
             }
         }
 
-    CATEGORY = "⭐️Baikong"
+    CATEGORY = "⭐️ Baikong"
     RETURN_TYPES = ("STRING", )
     FUNCTION = "color_limit"
     DESCRIPTION = "输入十六进制颜色，并根据设定的饱和度和亮度范围限制，生成新的颜色"
@@ -96,17 +78,21 @@ class BK_ColorLimit:
         # 构造新的 hex 表示
         hex_new = '#{:02x}{:02x}{:02x}'.format(*rgb_new)
 
-        return {"ui": {"text": (hex_new,)}, "result": (hex_new,)}
+        return {
+            "ui": {"text": [{"bg_color": hex_new, }], },
+            "result": (hex_new,)
+        }
+        
 
 
-if __name__ == "__main__":
-    selector_node = BK_ColorLimit()
-    print(
-        selector_node.color_limit(
-            hex_color="#FF0036",
-            saturation_start=0,
-            saturation_end=1,
-            brightness_start=0,
-            brightness_end=1,
-        )
-    )
+# if __name__ == "__main__":
+#     selector_node = BK_ColorLimit()
+#     print(
+#         selector_node.color_limit(
+#             hex_color="#FF0036",
+#             saturation_start=0,
+#             saturation_end=1,
+#             brightness_start=0,
+#             brightness_end=1,
+#         )
+#     )
