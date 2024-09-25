@@ -1,23 +1,5 @@
 
-# 计算颜色亮度
-def relative_luminance(r, g, b):
-    r = r / 255.0
-    g = g / 255.0
-    b = b / 255.0
-
-    r = r / 12.92 if r <= 0.03928 else ((r + 0.055) / 1.055) ** 2.4
-    g = g / 12.92 if g <= 0.03928 else ((g + 0.055) / 1.055) ** 2.4
-    b = b / 12.92 if b <= 0.03928 else ((b + 0.055) / 1.055) ** 2.4
-
-    return 0.2126 * r + 0.7152 * g + 0.0722 * b
-
-# 计算颜色对比度
-def contrast_ratio(l1, l2):
-    # l1 是亮度较大的颜色，l2 是较小的亮度
-    if l1 < l2:
-        l1, l2 = l2, l1
-    return (l1 + 0.05) / (l2 + 0.05)
-
+from .functions_color import relative_luminance, contrast_ratio
 
 class BK_ColorContrast:
 
@@ -35,11 +17,12 @@ class BK_ColorContrast:
             }
         }
 
-    CATEGORY = "⭐️Baikong"
+    CATEGORY = "⭐️ Baikong/Color"
     RETURN_TYPES = ( "STRING", "STRING", )
     RETURN_NAMES = ("BG_COLOR", "TEXT_COLOR", )
     FUNCTION = "exec"
-    OUTPUT_NODE = False
+    OUTPUT_NODE = True
+    DESCRIPTION = "计算颜色对比度，小于阈值返回亮色，大于阈值返回暗色"
 
     def exec(
         self,
@@ -87,16 +70,24 @@ class BK_ColorContrast:
         else:
             # 如果都不满足，可以尝试生成一个更合适的颜色
             out = dark_text_hex_color  # 默认黑色
-        return {"ui": {"text": (bg_hex_color, out)}, "result": (bg_hex_color, out)}
+        return {
+            "ui": {
+                "text": [{
+                    "bg_color": bg_hex_color,
+                    "front_color": out
+                }],
+            }, 
+            "result": (bg_hex_color, out)
+            }
 
 
-if __name__ == "__main__":
-    process_node = BK_ColorContrast()
-    print(
-        process_node.exec(
-            bg_hex_color="#FF6500",
-            WCAG_level = "AAA",
-            light_text_hex_color = "#dbb8bf",
-            dark_text_hex_color = "#4b3e41",
-        )
-    )
+# if __name__ == "__main__":
+#     process_node = BK_ColorContrast()
+#     print(
+#         process_node.exec(
+#             bg_hex_color="#FF6500",
+#             WCAG_level = "AAA",
+#             light_text_hex_color = "#dbb8bf",
+#             dark_text_hex_color = "#4b3e41",
+#         )
+#     )
