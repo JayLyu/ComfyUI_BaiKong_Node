@@ -26,7 +26,7 @@ class BK_ColorSelector:
             }
         }
 
-    CATEGORY = "⭐️ Baikong"
+    CATEGORY = "⭐️ Baikong/Color"
     RETURN_TYPES = ("STRING",)
     FUNCTION = "select_color"
     OUTPUT_NODE = False

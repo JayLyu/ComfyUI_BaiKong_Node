@@ -55,7 +55,7 @@ class BK_Img2Color:
 
     RETURN_TYPES = ("STRING", "STRING",)
     RETURN_NAMES = ("COLORS", "SELECT_COLOR",)
-    CATEGORY = "⭐️ Baikong"
+    CATEGORY = "⭐️ Baikong/Color"
     FUNCTION = "main"
     OUTPUT_NODE = True
     DESCRIPTION = "从输入图像中提取主要颜色，可指定颜色数量，支持排除特定颜色，并可选择生成互补色"

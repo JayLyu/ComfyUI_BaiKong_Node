@@ -2,4 +2,4 @@
 
 Get the colors palette from image
 
-![Get Image Color](GetImageColor.png)
+![Get Image Color](workflow/Workflow.png)

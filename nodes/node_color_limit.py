@@ -72,7 +72,7 @@ class BK_ColorLimit:
             }
         }
 
-    CATEGORY = "⭐️ Baikong"
+    CATEGORY = "⭐️ Baikong/Color"
     RETURN_TYPES = ("STRING", "IMAGE",)
     RETURN_NAMES = ("STRING", "PREVIEW")
     FUNCTION = "color_limit"

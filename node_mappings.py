@@ -25,7 +25,7 @@ NODE_CLASS_MAPPINGS = {
     # 图像生成
     "BK_GradientImage": BK_GradientImage,
     # 图像过滤
-    "BK_ImageAspectFilter": BK_ImageAspectFilter
+    # "BK_ImageAspectFilter": BK_ImageAspectFilter
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
@@ -39,5 +39,5 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     # 图像生成
     "BK_GradientImage": "BK Gradient Image",
     # 图像过滤
-    "BK_ImageAspectFilter": "BK Image Aspect Filter"
+    # "BK_ImageAspectFilter": "BK Image Aspect Filter"
 }

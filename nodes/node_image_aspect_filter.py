@@ -19,7 +19,7 @@ class BK_ImageAspectFilter:
 
     RETURN_TYPES = ("IMAGE",)
     FUNCTION = "filter"
-    CATEGORY = "⭐️ Baikong"
+    CATEGORY = "⭐️ Baikong/Image"
     DESCRIPTION = "过滤特定比例的图像"
 
     def filter(self, images, min_aspect_ratio: float, max_aspect_ratio: float, default_image):

@@ -15,11 +15,11 @@ class BK_ColorLuminance:
             }
         }
 
-    CATEGORY = "⭐️ Baikong"
+    CATEGORY = "⭐️ Baikong/Color"
     RETURN_TYPES = ("STRING", "STRING", )
     RETURN_NAMES = ("BG_COLOR", "TEXT_COLOR", )
     FUNCTION = "exec"
-    OUTPUT_NODE = False
+    OUTPUT_NODE = True
     DESCRIPTION = "计算颜色明度，明度小于阈值返回亮色，大于阈值返回暗色"
 
     def exec(

@@ -1,0 +1,851 @@
+{
+  "last_node_id": 46,
+  "last_link_id": 44,
+  "nodes": [
+    {
+      "id": 32,
+      "type": "BK_ColorLimit",
+      "pos": {
+        "0": 1130,
+        "1": 1640
+      },
+      "size": [
+        315,
+        192
+      ],
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "hex_color",
+          "type": "STRING",
+          "link": 28,
+          "widget": {
+            "name": "hex_color"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "STRING",
+          "type": "STRING",
+          "links": [
+            29
+          ],
+          "shape": 3,
+          "slot_index": 0
+        },
+        {
+          "name": "PREVIEW",
+          "type": "IMAGE",
+          "links": [
+            30
+          ],
+          "shape": 3,
+          "slot_index": 1
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "BK_ColorLimit"
+      },
+      "widgets_values": [
+        "#FF0036",
+        0.18,
+        0.6900000000000001,
+        0.34,
+        0.86,
+        "#6bdb59"
+      ]
+    },
+    {
+      "id": 33,
+      "type": "ShowText|pysssss",
+      "pos": {
+        "0": 1480,
+        "1": 1540
+      },
+      "size": [
+        222.42756511763696,
+        76
+      ],
+      "flags": {},
+      "order": 9,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "text",
+          "type": "STRING",
+          "link": 29,
+          "widget": {
+            "name": "text"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "STRING",
+          "type": "STRING",
+          "links": [
+            31,
+            34
+          ],
+          "shape": 6,
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "ShowText|pysssss"
+      },
+      "widgets_values": [
+        "",
+        "#6bdb59"
+      ]
+    },
+    {
+      "id": 34,
+      "type": "PreviewImage",
+      "pos": {
+        "0": 1480,
+        "1": 1680
+      },
+      "size": [
+        210,
+        246
+      ],
+      "flags": {},
+      "order": 10,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 30
+        }
+      ],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "PreviewImage"
+      }
+    },
+    {
+      "id": 35,
+      "type": "BK_ColorContrast",
+      "pos": {
+        "0": 1750,
+        "1": 1650
+      },
+      "size": [
+        313.49402996138747,
+        168
+      ],
+      "flags": {},
+      "order": 14,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "bg_hex_color",
+          "type": "STRING",
+          "link": 31,
+          "widget": {
+            "name": "bg_hex_color"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "BG_COLOR",
+          "type": "STRING",
+          "links": [],
+          "shape": 3,
+          "slot_index": 0
+        },
+        {
+          "name": "TEXT_COLOR",
+          "type": "STRING",
+          "links": [],
+          "shape": 3,
+          "slot_index": 1
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "BK_ColorContrast"
+      },
+      "widgets_values": [
+        "#FF0036",
+        "AA",
+        "#ffffff",
+        "#000000",
+        "BACKGROUND(#6bdb59)\nTEXT(#000000)"
+      ]
+    },
+    {
+      "id": 38,
+      "type": "BK_ColorLuminance",
+      "pos": {
+        "0": 1750,
+        "1": 1410
+      },
+      "size": [
+        315,
+        168
+      ],
+      "flags": {},
+      "order": 15,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "bg_hex_color",
+          "type": "STRING",
+          "link": 34,
+          "widget": {
+            "name": "bg_hex_color"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "BG_COLOR",
+          "type": "STRING",
+          "links": null,
+          "shape": 3
+        },
+        {
+          "name": "TEXT_COLOR",
+          "type": "STRING",
+          "links": null,
+          "shape": 3
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "BK_ColorLuminance"
+      },
+      "widgets_values": [
+        "#FF0036",
+        0.65,
+        "#ffffff",
+        "#000000",
+        "BACKGROUND(#6bdb59)\nTEXT(#ffffff)"
+      ]
+    },
+    {
+      "id": 41,
+      "type": "BK_GradientImage",
+      "pos": {
+        "0": 1390,
+        "1": 980
+      },
+      "size": {
+        "0": 315,
+        "1": 202
+      },
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "hex_color",
+          "type": "STRING",
+          "link": 38,
+          "widget": {
+            "name": "hex_color"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            39
+          ],
+          "shape": 3,
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "BK_GradientImage"
+      },
+      "widgets_values": [
+        "#FFFFFF",
+        512,
+        512,
+        0,
+        0,
+        "vertical",
+        false
+      ]
+    },
+    {
+      "id": 45,
+      "type": "BK_GradientImage",
+      "pos": {
+        "0": 1400,
+        "1": 460
+      },
+      "size": {
+        "0": 315,
+        "1": 202
+      },
+      "flags": {},
+      "order": 8,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "hex_color",
+          "type": "STRING",
+          "link": 43,
+          "widget": {
+            "name": "hex_color"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            44
+          ],
+          "shape": 3,
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "BK_GradientImage"
+      },
+      "widgets_values": [
+        "#FFFFFF",
+        512,
+        512,
+        0,
+        1,
+        "vertical",
+        false
+      ]
+    },
+    {
+      "id": 39,
+      "type": "BK_GradientImage",
+      "pos": {
+        "0": 1400,
+        "1": 723
+      },
+      "size": [
+        315,
+        202
+      ],
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "hex_color",
+          "type": "STRING",
+          "link": 41,
+          "widget": {
+            "name": "hex_color"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            42
+          ],
+          "shape": 3,
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "BK_GradientImage"
+      },
+      "widgets_values": [
+        "#FFFFFF",
+        512,
+        512,
+        1,
+        1,
+        "vertical",
+        false
+      ]
+    },
+    {
+      "id": 46,
+      "type": "PreviewImage",
+      "pos": {
+        "0": 1770,
+        "1": 460
+      },
+      "size": [
+        166.63342175826233,
+        201.45916001027308
+      ],
+      "flags": {},
+      "order": 13,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 44
+        }
+      ],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "PreviewImage"
+      }
+    },
+    {
+      "id": 44,
+      "type": "PreviewImage",
+      "pos": {
+        "0": 1772,
+        "1": 723
+      },
+      "size": [
+        171.93676433638734,
+        203.96454438527314
+      ],
+      "flags": {},
+      "order": 12,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 42
+        }
+      ],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "PreviewImage"
+      }
+    },
+    {
+      "id": 42,
+      "type": "PreviewImage",
+      "pos": {
+        "0": 1774,
+        "1": 991
+      },
+      "size": [
+        173.29644871138726,
+        246
+      ],
+      "flags": {},
+      "order": 11,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 39
+        }
+      ],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "PreviewImage"
+      }
+    },
+    {
+      "id": 18,
+      "type": "BK_Img2Color",
+      "pos": {
+        "0": 489.33953857421875,
+        "1": 1107.69384765625
+      },
+      "size": {
+        "0": 315,
+        "1": 216
+      },
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "input_image",
+          "type": "IMAGE",
+          "link": 14
+        }
+      ],
+      "outputs": [
+        {
+          "name": "COLORS",
+          "type": "STRING",
+          "links": [
+            15
+          ],
+          "slot_index": 0,
+          "shape": 3
+        },
+        {
+          "name": "SELECT_COLOR",
+          "type": "STRING",
+          "links": [
+            37
+          ],
+          "shape": 3,
+          "slot_index": 1
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "BK_Img2Color"
+      },
+      "widgets_values": [
+        2,
+        false,
+        80,
+        "",
+        2,
+        "#98abf1, #7bfc67,#7bfc67"
+      ]
+    },
+    {
+      "id": 19,
+      "type": "LoadImage",
+      "pos": {
+        "0": 16,
+        "1": 1101
+      },
+      "size": {
+        "0": 315,
+        "1": 314
+      },
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            14
+          ],
+          "slot_index": 0,
+          "shape": 3
+        },
+        {
+          "name": "MASK",
+          "type": "MASK",
+          "links": null,
+          "shape": 3
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LoadImage"
+      },
+      "widgets_values": [
+        "example.png",
+        "image"
+      ]
+    },
+    {
+      "id": 43,
+      "type": "BK_ColorSelector",
+      "pos": {
+        "0": 678.1456298828125,
+        "1": 649.0523071289062
+      },
+      "size": [
+        223.57255808638752,
+        144
+      ],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "hex_colors",
+          "type": "STRING",
+          "link": 40,
+          "widget": {
+            "name": "hex_colors"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "STRING",
+          "type": "STRING",
+          "links": [
+            41,
+            43
+          ],
+          "shape": 3,
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "BK_ColorSelector"
+      },
+      "widgets_values": [
+        "#FF0036, #FF5000, #0065ff, #3D7FFF",
+        ",",
+        1,
+        "#98abf1"
+      ]
+    },
+    {
+      "id": 20,
+      "type": "ShowText|pysssss",
+      "pos": {
+        "0": 678.1456298828125,
+        "1": 859.0523071289062
+      },
+      "size": [
+        222.42756511763696,
+        76
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "text",
+          "type": "STRING",
+          "link": 15,
+          "widget": {
+            "name": "text"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "STRING",
+          "type": "STRING",
+          "links": [
+            40
+          ],
+          "shape": 6,
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "ShowText|pysssss"
+      },
+      "widgets_values": [
+        "",
+        "#98abf1, #7bfc67"
+      ]
+    },
+    {
+      "id": 31,
+      "type": "ShowText|pysssss",
+      "pos": {
+        "0": 709.1456298828125,
+        "1": 1457.052490234375
+      },
+      "size": [
+        222.42756511763696,
+        76
+      ],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "text",
+          "type": "STRING",
+          "link": 37,
+          "widget": {
+            "name": "text"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "STRING",
+          "type": "STRING",
+          "links": [
+            28,
+            38
+          ],
+          "shape": 6,
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "ShowText|pysssss"
+      },
+      "widgets_values": [
+        "",
+        "#7bfc67"
+      ]
+    }
+  ],
+  "links": [
+    [
+      14,
+      19,
+      0,
+      18,
+      0,
+      "IMAGE"
+    ],
+    [
+      15,
+      18,
+      0,
+      20,
+      0,
+      "STRING"
+    ],
+    [
+      28,
+      31,
+      0,
+      32,
+      0,
+      "STRING"
+    ],
+    [
+      29,
+      32,
+      0,
+      33,
+      0,
+      "STRING"
+    ],
+    [
+      30,
+      32,
+      1,
+      34,
+      0,
+      "IMAGE"
+    ],
+    [
+      31,
+      33,
+      0,
+      35,
+      0,
+      "STRING"
+    ],
+    [
+      34,
+      33,
+      0,
+      38,
+      0,
+      "STRING"
+    ],
+    [
+      37,
+      18,
+      1,
+      31,
+      0,
+      "STRING"
+    ],
+    [
+      38,
+      31,
+      0,
+      41,
+      0,
+      "STRING"
+    ],
+    [
+      39,
+      41,
+      0,
+      42,
+      0,
+      "IMAGE"
+    ],
+    [
+      40,
+      20,
+      0,
+      43,
+      0,
+      "STRING"
+    ],
+    [
+      41,
+      43,
+      0,
+      39,
+      0,
+      "STRING"
+    ],
+    [
+      42,
+      39,
+      0,
+      44,
+      0,
+      "IMAGE"
+    ],
+    [
+      43,
+      43,
+      0,
+      45,
+      0,
+      "STRING"
+    ],
+    [
+      44,
+      45,
+      0,
+      46,
+      0,
+      "IMAGE"
+    ]
+  ],
+  "groups": [
+    {
+      "title": "Get Color",
+      "bounding": [
+        435,
+        373,
+        578,
+        1586
+      ],
+      "color": "#3f789e",
+      "font_size": 24,
+      "flags": {}
+    },
+    {
+      "title": "Draw Image",
+      "bounding": [
+        1050,
+        370,
+        1135,
+        881
+      ],
+      "color": "#3f789e",
+      "font_size": 24,
+      "flags": {}
+    },
+    {
+      "title": "Color Calculation",
+      "bounding": [
+        1051,
+        1293,
+        1135,
+        663
+      ],
+      "color": "#3f789e",
+      "font_size": 24,
+      "flags": {}
+    }
+  ],
+  "config": {},
+  "extra": {
+    "ds": {
+      "scale": 0.4665073802097333,
+      "offset": [
+        223.55823763244155,
+        4.305154285078899
+      ]
+    }
+  },
+  "version": 0.4
+}

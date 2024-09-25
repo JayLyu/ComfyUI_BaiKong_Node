@@ -34,7 +34,7 @@ class BK_ImageToSVG:
     RETURN_TYPES = ("STRING",)
     RETURN_NAMES = ("SVG",)
     FUNCTION = "convert_to_svg"
-    CATEGORY = "⭐️ Baikong"
+    CATEGORY = "⭐️ Baikong/Image"
     DESCRIPTION = "将输入的图像变为 SVG 输出"
 
     def convert_to_svg(self, image, **kwargs):
@@ -100,6 +100,6 @@ if __name__ == "__main__":
     process_node = BK_ImageToSVG()
     print(
         process_node.exec(
-            image = "../GetImageColor.png"
+            image = "../test_image.png"
         )
     )
