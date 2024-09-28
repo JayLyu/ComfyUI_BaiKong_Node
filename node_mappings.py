@@ -13,9 +13,8 @@ node_module_mappings = {
     'node_color_contrast': 'BK_ColorContrast',
     'node_color_luminance': 'BK_ColorLuminance',
     'node_image_aspect_filter': 'BK_ImageAspectFilter',
-    'node_image_to_svg': 'BK_ImageToSVG',
-    'node_svg_layout': 'BK_SvgLayout',
-    'node_image_layout': "BK_ImageLayout",
+    # 'node_image_to_svg': 'BK_ImageToSVG',
+    'node_image_random_layout': "BK_ImageRandomLayout",
     'node_image_list': 'BK_ImageList'
 }
 
@@ -36,17 +35,14 @@ NODE_CLASS_MAPPINGS = {class_name: imported_classes.get(class_name) for class_na
 
 
 NODE_DISPLAY_NAME_MAPPINGS = {
-    # 颜色提取
     "BK_Img2Color": "BK Img To Color",
     "BK_ColorSelector": "BK Color Selector",
-    # 颜色处理
     "BK_ColorLimit": "BK Color Limit",
     "BK_ColorContrast":  "BK Color Contrast",
     "BK_ColorLuminance":  "BK Color Luminance",
-    # 图像生成
     "BK_GradientImage": "BK Gradient Image",
-    "BK_ImageToSVG": "BK Image To SVG",
-    "BK_SvgLayout": "BK SVG Layout",
-    "BK_ImageLayout": "BK Image Layout",
+    "BK_ImageAspectFilter": "BK Image Aspect Filter",
+    # "BK_ImageToSVG": "BK Image To SVG",
+    "BK_ImageRandomLayout": "BK Image Random Layout",
     "BK_ImageList": "BK Image List"
 }
