@@ -55,12 +55,9 @@ Extract black lines from path_image as a path, and randomly scatter batch images
 
     def exec(self, batch_images, path_image, num_images=5, max_offset=20, max_rotation=45.0, min_scale=0.5, max_scale=1.5, draw_path_image=False):
         if not isinstance(path_image, torch.Tensor):
-            print(f"错误：path_image 不是张量。类型：{type(path_image)}")
+            print(
+                f"Error: path_image is not a tensor. Type: {type(path_image)}")
             return (None,)
-
-        # 确保 batch_images 是列表
-        if not isinstance(batch_images, list):
-            batch_images = [batch_images]
 
         path_img = tensor2pil(path_image[0])
 
