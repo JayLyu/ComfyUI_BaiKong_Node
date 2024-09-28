@@ -56,3 +56,4 @@ registerColorNode("BK_ColorLimit");
 registerColorNode("BK_ColorSelector");
 registerColorNode("BK_ColorContrast");
 registerColorNode("BK_ColorLuminance");
+registerColorNode("BK_ImageLayout")
