@@ -1,3 +1,5 @@
 scikit_learn>=1.4.0
 matplotlib
 scipy
+opencv-python
+scikit-image
