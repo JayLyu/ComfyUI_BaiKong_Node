@@ -1,5 +1,7 @@
 # ComfyUI_BaiKong_Node
 
+[English](./README.md) | [中文版](./README_CN.md)
+
 This is the node that processes visual features such as color and layout of the image.
 
 ![cover](./workflow/Workflow.png)
