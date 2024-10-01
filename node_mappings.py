@@ -15,6 +15,7 @@ node_module_mappings = {
     'node_image_aspect_filter': 'BK_ImageAspectFilter',
     # 'node_image_to_svg': 'BK_ImageToSVG',
     'node_image_random_layout': "BK_ImageRandomLayout",
+    'node_image_rect_layout': "BK_ImageRectLayout",
     'node_image_list': 'BK_ImageList',
     'node_image_print': "BK_PrintImage",
 }
@@ -45,6 +46,7 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "BK_ImageAspectFilter": "BK Image Aspect Filter",
     # "BK_ImageToSVG": "BK Image To SVG",
     "BK_ImageRandomLayout": "BK Image Random Layout",
+    "BK_ImageRectLayout": "BK Image Rect Layout",
     "BK_ImageList": "BK Image List",
     "BK_PrintImage": "BK Print Image"
 }
