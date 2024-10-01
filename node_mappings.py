@@ -26,9 +26,9 @@ for module_name, class_name in node_module_mappings.items():
         imported_class = getattr(module, class_name)
         imported_classes[class_name] = imported_class
     except ImportError as e:
-        print(f"{blue}ComfyUI Baikong Node:{green} 导入模块 {module_name} 失败: {str(e)}{color_end}")
+        print(f"{blue}ComfyUI Baikong Node:{green} Import {module_name} failed: {str(e)}{color_end}")
     except AttributeError:
-        print(f"{blue}ComfyUI Baikong Node:{green} 在模块 {module_name} 中找不到类 {class_name}{color_end}")
+        print(f"{blue}ComfyUI Baikong Node:{green} On {module_name} cannot find {class_name}{color_end}")
 
 
 NODE_CLASS_MAPPINGS = {class_name: imported_classes.get(class_name) for class_name in node_module_mappings.values()}
