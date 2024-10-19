@@ -1,4 +1,3 @@
-
 class BK_ColorSelector:
 
     @classmethod
@@ -38,18 +37,25 @@ class BK_ColorSelector:
         symbol: str = ",",
         split_count: int = 1,
     ) -> dict:
+        print(f"[BK_ColorSelector] ○ INPUT hex_colors: {hex_colors}， symbol: {symbol},split_count: {split_count}")
+
         # 将 str 分割成 list，并去除每个颜色周围的空白
         color_list = [color.strip() for color in hex_colors.split(symbol)]
+        print(f"[BK_ColorSelector] ├ PROCE Parsed {len(color_list)} colors")
 
         # 确保值在有效范围内
         split_count = max(1, min(split_count, len(color_list))) - 1
 
         # 提取指定颜色
         selected_color = color_list[split_count]
+        print(f"[BK_ColorSelector] ├ PROCE Selected color at index {split_count + 1}")
 
         # 验证颜色格式
         if not self.is_valid_hex_color(selected_color):
-            raise ValueError(f"无效的十六进制颜色: {selected_color}")
+            print(f"[BK_ColorSelector] ├ ERROR Invalid hex color: {selected_color}")
+            raise ValueError(f"[BK_ColorSelector] Invalid hex color: {selected_color}")
+
+        print(f"[BK_ColorSelector] ○ OUTPUT selected_color: {selected_color}")
 
         return {
             "ui": {"text": [{"bg_color": selected_color, }], },

@@ -4,14 +4,8 @@ from PIL import Image, ImageDraw
 import random
 import cv2
 from skimage.morphology import skeletonize
+from .functions_image import tensor2pil, pil2tensor
 
-# Tensor to PIL
-def tensor2pil(image):
-    return Image.fromarray(np.clip(255. * image.cpu().numpy().squeeze(), 0, 255).astype(np.uint8))
-
-# Convert PIL to Tensor
-def pil2tensor(image):
-    return torch.from_numpy(np.array(image).astype(np.float32) / 255.0).unsqueeze(0)
 
 class BK_ImageRandomLayout:
     @classmethod
@@ -44,43 +38,45 @@ Extract black lines from path_image as a path, and randomly scatter batch images
 
     @staticmethod
     def extract_skeleton_path(binary_array):
-        # 使用骨架化算法
+        # Skeletonize binary image
         skeleton = skeletonize(binary_array)
-        # 获取骨架点的坐标
+        # Gets the coordinates of the skeleton point
         path = np.column_stack(np.where(skeleton > 0))
         return path
 
     def extract_path(self, image):
         try:
-            # 转换为灰度图像
+            # Convert to grayscale and binarize
             gray = np.array(image.convert('L'))
-            
-            # 二值化
             _, binary = cv2.threshold(gray, 128, 255, cv2.THRESH_BINARY_INV)
+
+            # Make sure the binary image contains only 0 and 1
+            binary = binary.astype(bool).astype(np.uint8)
             
-            # 使用形态学操作细化线条
+            # Refine lines
             kernel = np.ones((3,3), np.uint8)
             binary = cv2.erode(binary, kernel, iterations=1)
             
-            # 提取骨架
+            # Extraction skeleton
             path = self.extract_skeleton_path(binary)
             
-            # 如果路径点太少，返回空数组
             if len(path) < 10:
+                print("[BK_ImageRandomLayout] ├ PROCE Path too short, returning empty array")
                 return np.array([])
             
-            # 限制点的数量
+            # Limit points
             max_points = 1000
             if len(path) > max_points:
                 indices = np.linspace(0, len(path) - 1, max_points, dtype=int)
                 path = path[indices]
             
-            # 交换 x 和 y 坐标，确保画布不会旋转 90 度
+            # Swap the x and y to make sure the CANVAS doesn't rotate 90 degrees
             path = path[:, [1, 0]]
             
+            print(f"[BK_ImageRandomLayout] ○ INPUT Extracted path with {len(path)} points")
             return path
         except Exception as e:
-            print(f"extract_path 错误: {e}")
+            print(f"[BK_ImageRandomLayout] ├ ERROR Extract_path: {e}")
             return np.array([])
 
     def exec(self, path_image, image_list, placement_mode, placement_count=5, max_offset=20, max_rotation=45.0, min_scale=0.5, max_scale=1.5):
@@ -93,12 +89,13 @@ Extract black lines from path_image as a path, and randomly scatter batch images
             path_img = Image.new('RGB', (512, 512), color='white')
 
         path = self.extract_path(path_img)
+        print(f"[BK_ImageRandomLayout] ├ PROCE Path extraction complete, {len(path)} points found")
         
-        # 创建一个新的图像用于显示路径点
+        # Create preview images
         points_preview = Image.new('RGBA', path_img.size, (255, 255, 255, 0))
         draw = ImageDraw.Draw(points_preview)
         
-        # 绘制所有路径点
+        # Draw all points
         for point in path:
             x, y = point
             draw.point((x, y), fill=(255, 0, 0, 255))
@@ -109,24 +106,26 @@ Extract black lines from path_image as a path, and randomly scatter batch images
                 selected_points = path[indices]
             else:
                 selected_points = path
-        else:  # 随机模式
+        else:  # Random mode
             if len(path) >= placement_count:
                 selected_points = path[np.random.choice(len(path), placement_count, replace=False)]
             else:
                 selected_points = path
 
-        # 在点预览图上标记选中的点
+        # Mark the selected_points on the POINTS_PREVIEW
         for point in selected_points:
             x, y = point
             draw.ellipse([x-4, y-4, x+4, y+4], fill=(0, 255, 0, 255))
+        print(f"[BK_ImageRandomLayout] ├ PROCE Selected {len(selected_points)} points for image placement")
 
+        # Create canvas
         canvas = Image.new('RGBA', path_img.size, (255, 255, 255, 0))
         canvas_with_path = Image.new('RGBA', path_img.size, (255, 255, 255, 0))
         
         path_img_rgba = path_img.convert('RGBA')
         canvas_with_path.alpha_composite(path_img_rgba, (0, 0))
 
-        # 预处理图像列表
+        # Preprocessed image list
         pil_image_list = [tensor2pil(img).convert('RGBA') for img in image_list]
 
         for point in selected_points:
@@ -138,7 +137,7 @@ Extract black lines from path_image as a path, and randomly scatter batch images
             rotation = random.uniform(-max_rotation, max_rotation)
             scale = random.uniform(min_scale, max_scale)
 
-            # 使用更快的重采样方法
+            # Resampling method
             pil_img = pil_img.rotate(rotation, expand=True, resample=Image.BILINEAR)
             new_size = (int(pil_img.width * scale), int(pil_img.height * scale))
             pil_img = pil_img.resize(new_size, Image.BILINEAR)
@@ -149,6 +148,7 @@ Extract black lines from path_image as a path, and randomly scatter batch images
             canvas.alpha_composite(pil_img, (paste_x, paste_y))
             canvas_with_path.alpha_composite(pil_img, (paste_x, paste_y))
 
+        print(f"[BK_ImageRandomLayout] ○ OUTPUT Placed {placement_count} images on canvas")
         result = pil2tensor(canvas)
         result_with_path = pil2tensor(canvas_with_path)
         points_preview_tensor = pil2tensor(points_preview)

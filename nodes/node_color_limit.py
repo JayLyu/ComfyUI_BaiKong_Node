@@ -89,34 +89,36 @@ Input a HEX color and generate a new color based on the set saturation and brigh
         brightness_start: float = 0,
         brightness_end: float = 1,
     ):
-        # 将 hex_color 转换成 rgb 元组
-        rgb_color = tuple(int(hex_color.lstrip(
-            '#')[i:i+2], 16) for i in (0, 2, 4))
+        
+        # Convert hex_color to rgb tuple
+        rgb_color = tuple(int(hex_color.lstrip('#')[i:i+2], 16) for i in (0, 2, 4))
 
-        # 将 rgb 转换成 hsv
+        # Convert rgb to hsv
         h, s, v = rgb_to_hsv(rgb_color)
 
-        # 四舍五入到小数点后六位
-        h = round(h, 6)
-        s = round(s, 6)
-        v = round(v, 6)
+        # Round to six decimal places
+        h, s, v = round(h, 6), round(s, 6), round(v, 6)
 
-        # s 和 v 的值必须在指定范围内
+        # Adjust s and v within specified ranges
         s_new = max(saturation_start, min(s, saturation_end))
         v_new = max(brightness_start, min(v, brightness_end))
 
-        # 将 hsv 的值转换为 rgb
+        # Convert hsv values to rgb
         rgb_new = hsv_to_rgb((h, s_new, v_new))
 
-        # 构造新的 hex 表示
+        # Construct new hex representation
         hex_new = '#{:02x}{:02x}{:02x}'.format(*rgb_new)
-
-        # 绘制色域图并标记 before 和 after 位置
+        
+        print(f"[BK_ColorLimit] ○ INPUT hex_color: {hex_color}")
+        print(f"[BK_ColorLimit] ├ PROCE HSV: ({h:.4f}, {s:.4f}, {v:.4f}) -> ({h:.4f}, {s_new:.4f}, {v_new:.4f})")
+        print(f"[BK_ColorLimit] ○ OUTPUT hex_color: {hex_new}")
+        
+        # Draw color domain image and mark before and after positions
         img_size = 512
         img = Image.new('RGB', (img_size, img_size), color='white')
         draw = ImageDraw.Draw(img)
 
-        # 绘制色域图
+        # Draw color domain
         for x in range(img_size):
             for y in range(img_size):
                 s = x / (img_size - 1)
@@ -178,10 +180,8 @@ Input a HEX color and generate a new color based on the set saturation and brigh
         draw.line([end_x, end_y, end_x - arrow_head_length * math.cos(angle - math.pi/6), end_y - arrow_head_length * math.sin(angle - math.pi/6)], fill='white', width=arrow_width)
         draw.line([end_x, end_y, end_x - arrow_head_length * math.cos(angle + math.pi/6), end_y - arrow_head_length * math.sin(angle + math.pi/6)], fill='white', width=arrow_width)
 
-        # 将图像转换为tensor
+        # Convert image to tensor
         img_tensor = pil2tensor(img.convert('RGB'))
-        # img.save("test.png")
-        # print(f"hex_new: {hex_new}")
 
         return {
             "ui": {"text": [{"bg_color": hex_new, }], },

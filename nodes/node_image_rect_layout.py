@@ -3,12 +3,7 @@ import numpy as np
 from PIL import Image, ImageDraw
 import random
 import cv2
-
-def tensor2pil(image):
-    return Image.fromarray(np.clip(255. * image.cpu().numpy().squeeze(), 0, 255).astype(np.uint8))
-
-def pil2tensor(image):
-    return torch.from_numpy(np.array(image).astype(np.float32) / 255.0).unsqueeze(0)
+from .functions_image import tensor2pil, pil2tensor
 
 class BK_ImageRectLayout:
     @classmethod
@@ -75,11 +70,12 @@ Find the bounding rectangle of black elements in the input image and place a sui
         rect = self.find_bounding_rectangle(background)
         
         if rect is None:
-            print("No black elements found in the background image.")
+            print("[BK_ImageRectLayout] ○ INPUT No black elements found in the background image.")
             return (background_image, background_image, image_list)
 
         x, y, width, height = rect
         target_aspect_ratio = width / height if height != 0 else 0
+        print(f"[BK_ImageRectLayout] ○ INPUT Found rectangle: x={x}, y={y}, width={width}, height={height}, target aspect ratio={target_aspect_ratio:.2f}")
         
         suitable_indices = []
         
@@ -89,8 +85,10 @@ Find the bounding rectangle of black elements in the input image and place a sui
             if abs(img_aspect_ratio - target_aspect_ratio) <= aspect_ratio_threshold:
                 suitable_indices.append(i)
         
+        print(f"[BK_ImageRectLayout] ├ PROCE Number of images matching aspect ratio: {len(suitable_indices)}")
+        
         if not suitable_indices:
-            print("No images found matching the aspect ratio.")
+            print("[BK_ImageRectLayout] ○ OUTPUT No images found matching the aspect ratio.")
             if use_background_if_no_match:
                 return (background_image, background_image, image_list)
             else:
@@ -100,38 +98,42 @@ Find the bounding rectangle of black elements in the input image and place a sui
         selected_index = random.choice(suitable_indices)
         selected_image = image_list[selected_index]
         pil_selected = tensor2pil(selected_image)
+        print(f"[BK_ImageRectLayout] ├ PROCE Selected image index: {selected_index}, size: {pil_selected.size}")
         
-        # 创建新的remaining_images列表，排除选中的图片
+        # Create new remaining_images, exclude the selected image
         remaining_images = [img for i, img in enumerate(image_list) if i != selected_index]
         
-        # 等比缩放图片以适应矩形
+        # Scale the image to fit the rect
         fitted_image = self.fit_image_to_rect(pil_selected, width, height)
         
-        # 创建输出图像（透明背景）
+        # Create output RGBA image
         output_image = Image.new('RGBA', background.size, (0, 0, 0, 0))
         
-        # 计算居中位置
+        # Calculate the center position
         paste_x = x + (width - fitted_image.width) // 2
         paste_y = y + (height - fitted_image.height) // 2
         
-        # 确保fitted_image是RGBA模式
+        # Check 'fitted_image' is RGBA
         if fitted_image.mode != 'RGBA':
             fitted_image = fitted_image.convert('RGBA')
         
-        # 粘贴图片到输出图像
+        # Paste fitted_image to output_image
         output_image.paste(fitted_image, (paste_x, paste_y), fitted_image)
         
-        # 创建矩形预览图像
+        # Create a rectangular preview image
         rect_preview = background.copy().convert('RGBA')
         rect_preview.paste(fitted_image, (paste_x, paste_y), fitted_image)
         draw = ImageDraw.Draw(rect_preview)
         draw.rectangle([x, y, x+width, y+height], outline=(255, 0, 0), width=2)
         
-        # 在RECT_PREVIEW中用绿色线框框住选中的图片
+        # Frame the selected image in green in RECT_PREVIEW
         draw.rectangle([paste_x, paste_y, paste_x+fitted_image.width, paste_y+fitted_image.height], outline=(0, 255, 0), width=2)
         
-        # 确保输出图像是RGBA模式
+        # Check 'output_image' is RGBA
         output_image = output_image.convert('RGBA')
         rect_preview = rect_preview.convert('RGBA')
+        
+        print(f"[BK_ImageRectLayout] ├ PROCE Final output image size: {output_image.size}")
+        print(f"[BK_ImageRectLayout] ○ OUTPUT Number of remaining unused images: {len(remaining_images)}")
         
         return (pil2tensor(output_image), pil2tensor(rect_preview), remaining_images)
