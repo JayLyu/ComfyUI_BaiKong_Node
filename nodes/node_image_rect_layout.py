@@ -70,11 +70,12 @@ Find the bounding rectangle of black elements in the input image and place a sui
         rect = self.find_bounding_rectangle(background)
         
         if rect is None:
-            print("No black elements found in the background image.")
+            print("[BK_ImageRectLayout] ○ INPUT No black elements found in the background image.")
             return (background_image, background_image, image_list)
 
         x, y, width, height = rect
         target_aspect_ratio = width / height if height != 0 else 0
+        print(f"[BK_ImageRectLayout] ○ INPUT Found rectangle: x={x}, y={y}, width={width}, height={height}, target aspect ratio={target_aspect_ratio:.2f}")
         
         suitable_indices = []
         
@@ -84,8 +85,10 @@ Find the bounding rectangle of black elements in the input image and place a sui
             if abs(img_aspect_ratio - target_aspect_ratio) <= aspect_ratio_threshold:
                 suitable_indices.append(i)
         
+        print(f"[BK_ImageRectLayout] ├ PROCE Number of images matching aspect ratio: {len(suitable_indices)}")
+        
         if not suitable_indices:
-            print("No images found matching the aspect ratio.")
+            print("[BK_ImageRectLayout] ○ OUTPUT No images found matching the aspect ratio.")
             if use_background_if_no_match:
                 return (background_image, background_image, image_list)
             else:
@@ -95,6 +98,7 @@ Find the bounding rectangle of black elements in the input image and place a sui
         selected_index = random.choice(suitable_indices)
         selected_image = image_list[selected_index]
         pil_selected = tensor2pil(selected_image)
+        print(f"[BK_ImageRectLayout] ├ PROCE Selected image index: {selected_index}, size: {pil_selected.size}")
         
         # Create new remaining_images, exclude the selected image
         remaining_images = [img for i, img in enumerate(image_list) if i != selected_index]
@@ -128,5 +132,8 @@ Find the bounding rectangle of black elements in the input image and place a sui
         # Check 'output_image' is RGBA
         output_image = output_image.convert('RGBA')
         rect_preview = rect_preview.convert('RGBA')
+        
+        print(f"[BK_ImageRectLayout] ├ PROCE Final output image size: {output_image.size}")
+        print(f"[BK_ImageRectLayout] ○ OUTPUT Number of remaining unused images: {len(remaining_images)}")
         
         return (pil2tensor(output_image), pil2tensor(rect_preview), remaining_images)

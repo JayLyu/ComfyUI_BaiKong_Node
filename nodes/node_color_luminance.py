@@ -32,13 +32,15 @@ class BK_ColorLuminance:
         light_text_hex_color = light_text_hex_color or "#FFFFFF"
         dark_text_hex_color = dark_text_hex_color or "#000000"
 
+        print(f"[BK_ColorLuminance] ○ INPUT bg_hex_color: {bg_hex_color}")
+
         bg_r, bg_g, bg_b = self.hex_to_rgb(bg_hex_color)
         bg_luminance = relative_luminance(bg_r, bg_g, bg_b)
 
-        print(f"背景: {bg_hex_color}, 明度: {bg_luminance:.4f}, 阈值: {luminance_threshold}")
+        print(f"[BK_ColorLuminance] ├ PROCE luminance: {bg_luminance:.4f} (Threshold: {luminance_threshold})")
 
         text_color = dark_text_hex_color if bg_luminance > luminance_threshold else light_text_hex_color
-        print(f"选择{'暗' if bg_luminance > luminance_threshold else '亮'}色文本: {text_color}")
+        print(f"[BK_ColorLuminance] ○ OUTPUT {'dark' if bg_luminance > luminance_threshold else 'light'}_text_hex_color: {text_color}")
 
         return {
             "ui": {"text": [{"bg_color": bg_hex_color, "front_color": text_color}], },

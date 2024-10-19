@@ -1,4 +1,3 @@
-
 from .functions_color import relative_luminance, contrast_ratio
 
 class BK_ColorContrast:
@@ -31,19 +30,20 @@ class BK_ColorContrast:
         light_text_hex_color = "",
         dark_text_hex_color = "",
     ):
-        # 如果用户没有输入，设置默认值
+        # Set default values if not provided
         light_text_hex_color = light_text_hex_color or "#FFFFFF"
         dark_text_hex_color = dark_text_hex_color or "#000000"
         
-        # 解析 HEX 颜色为 RGB
-        r = int(bg_hex_color[1:3], 16)
-        g = int(bg_hex_color[3:5], 16)
-        b = int(bg_hex_color[5:7], 16)
+        print(f"[BK_ColorContrast] ○ Input bg_hex_color: {bg_hex_color}")
+        
+        # Parse HEX colors to RGB
+        r, g, b = int(bg_hex_color[1:3], 16), int(bg_hex_color[3:5], 16), int(bg_hex_color[5:7], 16)
 
-        # 计算背景色的亮度
+        # Calculate background luminance
         background_luminance = relative_luminance(r, g, b)
+        print(f"[BK_ColorContrast] ├ PROCE luminance: {background_luminance:.4f}")
 
-        # 计算文本颜色的亮度
+        # Calculate text color luminance
         light_luminance = relative_luminance(
             int(light_text_hex_color[1:3], 16),
             int(light_text_hex_color[3:5], 16),
@@ -55,21 +55,26 @@ class BK_ColorContrast:
             int(dark_text_hex_color[5:7], 16)
         )
 
-        # 计算与自定义白色和黑色的对比度
+        # Calculate contrast ratios
         light_contrast = contrast_ratio(light_luminance, background_luminance)
         dark_contrast = contrast_ratio(dark_luminance, background_luminance)
+        print(f"[BK_ColorContrast] ├ PROCE Light contrast: {light_contrast:.2f}, Dark contrast: {dark_contrast:.2f}")
 
-        # 设置对比度阈值
+        # Set contrast threshold
         threshold = 7.0 if WCAG_level == "AAA" else 4.5
+        print(f"[BK_ColorContrast] ├ PROCE Using WCAG {WCAG_level} level, threshold: {threshold}")
 
-        # 根据对比度选择最佳的文字颜色
+        # Choose best text color based on contrast
         if light_contrast >= threshold:
             out = light_text_hex_color
+            print(f"[BK_ColorContrast] ○ OUTPUT light_text_color: {out}")
         elif dark_contrast >= threshold:
             out = dark_text_hex_color
+            print(f"[BK_ColorContrast] ○ OUTPUT dark_text_color: {out}")
         else:
-            # 如果都不满足，可以尝试生成一个更合适的颜色
-            out = dark_text_hex_color  # 默认黑色
+            out = dark_text_hex_color  # Default to dark color
+            print(f"[BK_ColorContrast] Neither contrast meets threshold. Defaulting to dark color: {out}")
+
         return {
             "ui": {
                 "text": [{
@@ -78,8 +83,7 @@ class BK_ColorContrast:
                 }],
             }, 
             "result": (bg_hex_color, out)
-            }
-
+        }
 
 # if __name__ == "__main__":
 #     process_node = BK_ColorContrast()

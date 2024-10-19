@@ -23,26 +23,33 @@ class BK_ImageAspectFilter:
     DESCRIPTION = "过滤特定比例的图像"
 
     def filter(self, images, min_aspect_ratio: float, max_aspect_ratio: float, default_image):
+        print(f"[BK_ImageAspectFilter] ○ INPUT min_aspect_ratio: {min_aspect_ratio}, max_aspect_ratio: {max_aspect_ratio}")
+        
         valid_images = []
         ui_text = []
 
         # 确保 images 是 4D 张量 (batch, height, width, channels)
         if len(images.shape) != 4:
-            raise ValueError(f"输入图像的形状不正确。预期为 (batch, height, width, channels)，实际为 {images.shape}")
+            print(f"[BK_ImageAspectFilter] ├ ERROR Invalid input shape: {images.shape}")
+            raise ValueError(f"[BK_ImageAspectFilter] Invalid input shape. Expected (batch, height, width, channels), got {images.shape}")
 
         batch_size, height, width, channels = images.shape
+        print(f"[BK_ImageAspectFilter] ├ PROCE Input batch size: {batch_size}")
 
         for i in range(batch_size):
             aspect_ratio = width / height
-
-            ui_text.append(f"image {i} - 宽高比: {aspect_ratio:.4f} - 尺寸: ({width}, {height})")
+            ui_text.append(f"image {i} - aspect ratio: {aspect_ratio:.4f} - size: ({width}, {height})")
 
             # 检查宽高比是否在给定范围内
             if min_aspect_ratio <= aspect_ratio <= max_aspect_ratio:
                 valid_images.append(images[i].unsqueeze(0))
+                print(f"[BK_ImageAspectFilter] ├ PROCE Image {i} accepted: aspect ratio {aspect_ratio:.4f}")
+            else:
+                print(f"[BK_ImageAspectFilter] ├ PROCE Image {i} rejected: aspect ratio {aspect_ratio:.4f}")
 
         if not valid_images:
-            ui_text.append("没有图像符合给定的宽高比标准。使用默认图像。")
+            print("[BK_ImageAspectFilter] ├ PROCE No images meet the aspect ratio criteria. Using default image.")
+            ui_text.append("No images meet the aspect ratio criteria. Using default image.")
             valid_images = [default_image]
 
         # 确保返回的是正确格式的张量
@@ -51,6 +58,7 @@ class BK_ImageAspectFilter:
         else:
             valid_images = torch.cat(valid_images, dim=0)
 
+        print(f"[BK_ImageAspectFilter] ○ OUTPUT Valid images: {len(valid_images)}")
         ui_text = "\n".join(ui_text)
 
         return {"ui": {"text": f"text:{valid_images, ui_text}"}, "result": (valid_images, ui_text)}

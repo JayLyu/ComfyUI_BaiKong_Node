@@ -69,22 +69,27 @@ class BK_Img2Color:
             ",")] if exclude_colors.strip() else []
         self.num_iterations = int(512 * (accuracy / 100))
 
+        print(f"[BK_Img2Color] ○ Input input_image")
+
         original_colors = self.interrogate_colors(input_image, num_colors)
         rgb = self.ndarrays_to_rgb(original_colors)
 
+        print(f"[BK_Img2Color] ├ PROCE Extracted {len(rgb)} colors")
+
         if get_complementary_color:
             rgb = self.rgb_to_complementary(rgb)
+            print("[BK_Img2Color] ├ PROCE Generated complementary colors")
 
         hex_colors = [
             f"#{color[0]:02x}{color[1]:02x}{color[2]:02x}" for color in rgb]
         out = self.join_and_exclude(hex_colors)
 
-        # 处理 select_color
         color_list = out.split(", ")
         selected_color = color_list[-1] if select_color > len(
             color_list) else color_list[select_color - 1]
 
-        # 指定的输出格式 {"ui": {"text": (value1, value2)}, "result":  (value1, value2)}
+        print(f"[BK_Img2Color] ○ OUTPUT selected color: {selected_color}， all colors: {out}")
+
         return {"ui": {"text": (out, selected_color)}, "result": (out, selected_color)}
 
     def join_and_exclude(self, colors: List[str]) -> str:
