@@ -1,11 +1,11 @@
 import math
+import colorsys
+import numpy as np
+import torch
 from PIL import Image, ImageDraw
 # from .functions_color import rgb_to_hsl, hsl_to_rgb
 # from .functions_image import pil2tensor, tensor2pil
 
-import colorsys
-import torch
-import numpy as np
 # 将 rgb 元组转换成 hsv
 def rgb_to_hsv(rgb):
     r, g, b = rgb
@@ -30,10 +30,13 @@ def pil2tensor(image):
     return torch.from_numpy(np.array(image).astype(np.float32) / 255.0).unsqueeze(0) 
 
 class BK_ColorLimit:
+    """
+    Node for limiting a color's saturation and brightness values within specified ranges.
+    Provides a visual representation of the color domain with the before/after positions.
+    """
 
     @classmethod
     def INPUT_TYPES(s):
-
         return {
             "required": {
                 "hex_color": ("STRING", {
@@ -81,6 +84,95 @@ Input a HEX color and generate a new color based on the set saturation and brigh
 输入十六进制颜色，并根据设定的饱和度和亮度范围限制，生成新的颜色
 """
 
+    @staticmethod
+    def hex_to_rgb(hex_color):
+        """Convert hex color string to RGB tuple"""
+        # Ensure proper format with leading #
+        hex_color = hex_color.lstrip('#')
+        if len(hex_color) != 6:
+            # Default to red if incorrect format
+            print(f"[BK_ColorLimit] ├ WARNING Invalid hex color format: {hex_color}. Using default red color.")
+            hex_color = "FF0036"
+        
+        try:
+            return tuple(int(hex_color[i:i+2], 16) for i in (0, 2, 4))
+        except ValueError:
+            print(f"[BK_ColorLimit] ├ WARNING Could not parse hex color: {hex_color}. Using default red color.")
+            return (255, 0, 54)  # Default red color
+
+    @staticmethod
+    def rgb_to_hsv(rgb):
+        """Convert RGB tuple to HSV values"""
+        r, g, b = rgb
+        h, s, v = colorsys.rgb_to_hsv(r / 255.0, g / 255.0, b / 255.0)
+        return h, s, v
+
+    @staticmethod
+    def hsv_to_rgb(hsv):
+        """Convert HSV values to RGB tuple"""
+        h, s, v = hsv
+        r, g, b = colorsys.hsv_to_rgb(h, s, v)
+        return int(r * 255.0), int(g * 255.0), int(b * 255.0)
+
+    @staticmethod
+    def pil2tensor(image):
+        """Convert PIL image to tensor"""
+        return torch.from_numpy(np.array(image).astype(np.float32) / 255.0).unsqueeze(0)
+
+    def create_color_domain_image(self, h, img_size):
+        """Create a color domain image for a given hue using numpy for efficiency"""
+        # Create coordinate grids for S and V
+        x = np.linspace(0, 1, img_size)
+        y = np.linspace(1, 0, img_size)
+        s_grid, v_grid = np.meshgrid(x, y)
+        
+        # Create empty image array
+        img_array = np.zeros((img_size, img_size, 3), dtype=np.uint8)
+        
+        # Create HSV arrays with broadcasting
+        hsv_array = np.dstack([
+            np.full_like(s_grid, h),
+            s_grid,
+            v_grid
+        ])
+        
+        # Convert HSV to RGB efficiently
+        for y in range(img_size):
+            for x in range(img_size):
+                hsv = hsv_array[y, x]
+                img_array[y, x] = self.hsv_to_rgb(hsv)
+        
+        return Image.fromarray(img_array)
+
+    def draw_dashed_rectangle(self, draw, bbox, color='white', width=1, dash_length=4):
+        """Draw a dashed rectangle on the image"""
+        x0, y0, x1, y1 = bbox
+        # Draw dashed horizontal lines
+        for i in range(x0, x1, dash_length * 2):
+            draw.line([(i, y0), (min(i + dash_length, x1), y0)], fill=color, width=width)
+            draw.line([(i, y1), (min(i + dash_length, x1), y1)], fill=color, width=width)
+        # Draw dashed vertical lines
+        for i in range(y0, y1, dash_length * 2):
+            draw.line([(x0, i), (x0, min(i + dash_length, y1))], fill=color, width=width)
+            draw.line([(x1, i), (x1, min(i + dash_length, y1))], fill=color, width=width)
+
+    def draw_arrow(self, draw, start_point, end_point, color='white', width=2, head_length=7):
+        """Draw an arrow between two points"""
+        x1, y1 = start_point
+        x2, y2 = end_point
+        
+        # Calculate angle
+        angle = math.atan2(y2 - y1, x2 - x1)
+        
+        # Draw line
+        draw.line([x1, y1, x2, y2], fill=color, width=width)
+        
+        # Draw arrow head
+        draw.line([x2, y2, x2 - head_length * math.cos(angle - math.pi/6), y2 - head_length * math.sin(angle - math.pi/6)], 
+                 fill=color, width=width)
+        draw.line([x2, y2, x2 - head_length * math.cos(angle + math.pi/6), y2 - head_length * math.sin(angle + math.pi/6)], 
+                 fill=color, width=width)
+
     def color_limit(
         self,
         hex_color,
@@ -89,100 +181,93 @@ Input a HEX color and generate a new color based on the set saturation and brigh
         brightness_start: float = 0,
         brightness_end: float = 1,
     ):
+        """
+        Limit a color's saturation and brightness values within specified ranges.
+        Generates a new color and a visual preview of the color domain.
+        """
+        # Input validation and normalization
+        saturation_start = max(0.0, min(1.0, saturation_start))
+        saturation_end = max(saturation_start, min(1.0, saturation_end))
+        brightness_start = max(0.0, min(1.0, brightness_start))
+        brightness_end = max(brightness_start, min(1.0, brightness_end))
         
-        # Convert hex_color to rgb tuple
-        rgb_color = tuple(int(hex_color.lstrip('#')[i:i+2], 16) for i in (0, 2, 4))
-
-        # Convert rgb to hsv
-        h, s, v = rgb_to_hsv(rgb_color)
-
+        # Ensure hex_color starts with #
+        if not hex_color.startswith('#'):
+            hex_color = f"#{hex_color}"
+        
+        # Parse and convert colors
+        rgb_color = self.hex_to_rgb(hex_color)
+        h, s, v = self.rgb_to_hsv(rgb_color)
+        
         # Round to six decimal places
         h, s, v = round(h, 6), round(s, 6), round(v, 6)
-
-        # Adjust s and v within specified ranges
+        
+        # Apply saturation and brightness limits
         s_new = max(saturation_start, min(s, saturation_end))
         v_new = max(brightness_start, min(v, brightness_end))
-
-        # Convert hsv values to rgb
-        rgb_new = hsv_to_rgb((h, s_new, v_new))
-
-        # Construct new hex representation
+        
+        # Generate new color
+        rgb_new = self.hsv_to_rgb((h, s_new, v_new))
         hex_new = '#{:02x}{:02x}{:02x}'.format(*rgb_new)
         
-        print(f"[BK_ColorLimit] ○ INPUT hex_color: {hex_color}")
+        # Log information
+        print(f"[BK_ColorLimit] ○ INPUT Original color: {hex_color}")
         print(f"[BK_ColorLimit] ├ PROCE HSV: ({h:.4f}, {s:.4f}, {v:.4f}) -> ({h:.4f}, {s_new:.4f}, {v_new:.4f})")
-        print(f"[BK_ColorLimit] ○ OUTPUT hex_color: {hex_new}")
+        print(f"[BK_ColorLimit] ○ OUTPUT New color: {hex_new}")
         
-        # Draw color domain image and mark before and after positions
+        # Create visualization
         img_size = 512
-        img = Image.new('RGB', (img_size, img_size), color='white')
+        img = self.create_color_domain_image(h, img_size)
         draw = ImageDraw.Draw(img)
-
-        # Draw color domain
-        for x in range(img_size):
-            for y in range(img_size):
-                s = x / (img_size - 1)
-                v = 1 - y / (img_size - 1)
-                rgb = hsv_to_rgb((h, s, v))
-                draw.point((x, y), fill=rgb)
         
-        # 在绘制标记之前，添加绘制白色虚线框的函数
-        def draw_dashed_rectangle(draw, bbox, color='white', width=1, dash_length=4):
-            x0, y0, x1, y1 = bbox
-            for i in range(x0, x1, dash_length * 2):
-                draw.line([(i, y0), (min(i + dash_length, x1), y0)], fill=color, width=width)
-                draw.line([(i, y1), (min(i + dash_length, x1), y1)], fill=color, width=width)
-            for i in range(y0, y1, dash_length * 2):
-                draw.line([(x0, i), (x0, min(i + dash_length, y1))], fill=color, width=width)
-                draw.line([(x1, i), (x1, min(i + dash_length, y1))], fill=color, width=width)
-
-        # 计算虚线框的位置
+        # Calculate positions for visualization elements
         x1 = int(saturation_start * (img_size - 1))
         x2 = int(saturation_end * (img_size - 1))
         y1 = int((1 - brightness_end) * (img_size - 1))
         y2 = int((1 - brightness_start) * (img_size - 1))
-
-        # 绘制白色虚线框
-        draw_dashed_rectangle(draw, (x1, y1, x2, y2), color='white', width=1, dash_length=4)
-
-        # 标记 before 位置
-        x_before = int(s * (img_size - 1))
-        y_before = int(v * (img_size - 1))
         
-        draw = ImageDraw.Draw(img)
+        # Draw constraint rectangle
+        self.draw_dashed_rectangle(draw, (x1, y1, x2, y2), color='white', width=1, dash_length=4)
+        
+        # Calculate and draw before/after positions
         dot_size = 12
         dot_width = 4
-        arrow_gap = 12  # 箭头与圆圈之间的距离
-
-        # 标记 before 位置
-        draw.ellipse([x_before-dot_size, y_before-dot_size, x_before+dot_size, y_before+dot_size], outline='white', width=dot_width)
-
-        # 标记 after 位置
+        arrow_gap = 12
+        
+        # Original color position
+        x_before = int(s * (img_size - 1))
+        y_before = int((1 - v) * (img_size - 1))
+        x_before = min(max(0, x_before), img_size - 1)
+        y_before = min(max(0, y_before), img_size - 1)
+        
+        # New color position
         x_after = int(s_new * (img_size - 1))
-        y_after = int((1-v_new) * (img_size - 1))
-        draw.ellipse([x_after-dot_size, y_after-dot_size, x_after+dot_size, y_after+dot_size], outline='white', width=dot_width)
-
-        # 绘制箭头
-        arrow_width = 2
-        angle = math.atan2(y_after - y_before, x_after - x_before)
+        y_after = int((1 - v_new) * (img_size - 1))
+        x_after = min(max(0, x_after), img_size - 1)
+        y_after = min(max(0, y_after), img_size - 1)
         
-        # 计算箭头起点和终点
-        start_x = x_before + (dot_size + arrow_gap) * math.cos(angle)
-        start_y = y_before + (dot_size + arrow_gap) * math.sin(angle)
-        end_x = x_after - (dot_size + arrow_gap) * math.cos(angle)
-        end_y = y_after - (dot_size + arrow_gap) * math.sin(angle)
+        # Draw indicators
+        draw.ellipse([x_before-dot_size, y_before-dot_size, x_before+dot_size, y_before+dot_size], 
+                    outline='white', width=dot_width)
+        draw.ellipse([x_after-dot_size, y_after-dot_size, x_after+dot_size, y_after+dot_size], 
+                    outline='white', width=dot_width)
         
-        # 绘制箭头主体
-        draw.line([start_x, start_y, end_x, end_y], fill='white', width=arrow_width)
+        # Only draw arrow if positions are different
+        if (x_before, y_before) != (x_after, y_after):
+            # Calculate arrow points with padding
+            angle = math.atan2(y_after - y_before, x_after - x_before)
+            start_x = x_before + (dot_size + arrow_gap) * math.cos(angle)
+            start_y = y_before + (dot_size + arrow_gap) * math.sin(angle)
+            end_x = x_after - (dot_size + arrow_gap) * math.cos(angle)
+            end_y = y_after - (dot_size + arrow_gap) * math.sin(angle)
+            
+            # Draw arrow
+            self.draw_arrow(draw, (start_x, start_y), (end_x, end_y), color='white', width=2, head_length=7)
         
-        # 绘制箭头头部
-        arrow_head_length = 7
-        draw.line([end_x, end_y, end_x - arrow_head_length * math.cos(angle - math.pi/6), end_y - arrow_head_length * math.sin(angle - math.pi/6)], fill='white', width=arrow_width)
-        draw.line([end_x, end_y, end_x - arrow_head_length * math.cos(angle + math.pi/6), end_y - arrow_head_length * math.sin(angle + math.pi/6)], fill='white', width=arrow_width)
-
         # Convert image to tensor
-        img_tensor = pil2tensor(img.convert('RGB'))
-
+        img_tensor = self.pil2tensor(img.convert('RGB'))
+        
+        # Return results
         return {
             "ui": {"text": [{"bg_color": hex_new, }], },
             "result": (hex_new, img_tensor)
