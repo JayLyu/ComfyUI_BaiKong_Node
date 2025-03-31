@@ -1,7 +1,7 @@
 [project]
 name = "comfyui_baikong_node"
 description = "Nodes for advanced color manipulation and image processing: BK Img To Color, BK Color Selector, BK Color Contrast, BK Color Limit, BK Color Luminance, BK Gradient Image, and BK Image Aspect Filter."
-version = "1.2.9"
+version = "1.3.0"
 license = { file = "LICENSE" }
 dependencies = ["scikit_learn>=1.4.0",]
 
