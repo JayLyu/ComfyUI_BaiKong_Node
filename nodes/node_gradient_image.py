@@ -1,4 +1,6 @@
 from PIL import Image, ImageDraw
+import numpy as np
+import torch
 from torchvision.transforms import ToPILImage
 
 from .functions_image import pil2tensor
@@ -42,7 +44,67 @@ class BK_GradientImage:
 
     @staticmethod
     def hex_to_rgb(hex_color):
-        return tuple(int(hex_color[i:i+2], 16) for i in (1, 3, 5))
+        """Convert hex color string to RGB tuple"""
+        # Handle both formats: #FFFFFF or FFFFFF
+        hex_color = hex_color.lstrip('#')
+        if len(hex_color) != 6:
+            # Default to white if incorrect format
+            print(f"[BK_GradientImage] ├ WARNING Invalid hex color format: {hex_color}. Using white instead.")
+            hex_color = "FFFFFF"
+        
+        try:
+            return tuple(int(hex_color[i:i+2], 16) for i in (0, 2, 4))
+        except ValueError:
+            print(f"[BK_GradientImage] ├ WARNING Could not parse hex color: {hex_color}. Using white instead.")
+            return (255, 255, 255)
+
+    def create_gradient_array(self, width, height, rgb, start_pos, end_pos, direction, reverse):
+        """Create gradient array using numpy for better performance"""
+        # Create empty RGBA array (values 0-255)
+        gradient = np.zeros((height, width, 4), dtype=np.uint8)
+        
+        # Set RGB channels
+        gradient[:, :, 0] = rgb[0]
+        gradient[:, :, 1] = rgb[1]
+        gradient[:, :, 2] = rgb[2]
+        
+        # Determine gradient direction
+        is_horizontal = direction == 'horizontal'
+        size = width if is_horizontal else height
+        
+        # Calculate positions in pixels
+        start = max(0, min(size-1, int(size * start_pos)))
+        end = max(start+1, min(size, int(size * end_pos)))
+        
+        # Create alpha gradient
+        alpha_range = np.linspace(0, 255, end - start).astype(np.uint8)
+        
+        # Apply alpha to the correct dimension
+        if is_horizontal:
+            for i, alpha in enumerate(alpha_range):
+                pos = start + i
+                if pos < width:
+                    gradient[:, pos, 3] = alpha
+            # Fill remaining area with full opacity
+            if end < width:
+                gradient[:, end:, 3] = 255
+        else:
+            for i, alpha in enumerate(alpha_range):
+                pos = start + i
+                if pos < height:
+                    gradient[pos, :, 3] = alpha
+            # Fill remaining area with full opacity
+            if end < height:
+                gradient[end:, :, 3] = 255
+        
+        # Reverse if needed
+        if reverse:
+            if is_horizontal:
+                gradient = gradient[:, ::-1, :]
+            else:
+                gradient = gradient[::-1, :, :]
+        
+        return gradient
 
     def main(
         self,
@@ -54,31 +116,25 @@ class BK_GradientImage:
         direction: str = "horizontal",
         reverse: bool = False
     ):
-        image = Image.new("RGBA", (width, height))
-        draw = ImageDraw.Draw(image)
-
-        r, g, b = self.hex_to_rgb(hex_color)
-
-        is_horizontal = direction == 'horizontal'
-        size = width if is_horizontal else height
-        start = int(size * start_position)
-        end = int(size * end_position)
-
-        for i in range(start, end):
-            alpha = int(255 * (i - start) / (end - start))
-            color = (r, g, b, alpha)
-            if is_horizontal:
-                draw.line((i, 0, i, height), fill=color)
-            else:
-                draw.line((0, i, width, i), fill=color)
-
-        # 填充剩余部分
-        fill_area = [end, 0, size, height] if is_horizontal else [0, end, width, size]
-        draw.rectangle(fill_area, fill=(r, g, b, 255))
-
-        if reverse:
-            image = image.rotate(180)
-
+        """Generate a gradient image with the specified parameters"""
+        # Input validation
+        width = max(1, width)
+        height = max(1, height)
+        start_position = max(0.0, min(1.0, start_position))
+        end_position = max(start_position + 0.01, min(1.0, end_position))
+        
+        # Convert hex color to RGB
+        rgb = self.hex_to_rgb(hex_color)
+        
+        # Create gradient using numpy array
+        gradient_array = self.create_gradient_array(
+            width, height, rgb, start_position, end_position, direction, reverse
+        )
+        
+        # Convert numpy array to PIL Image
+        image = Image.fromarray(gradient_array, 'RGBA')
+        
+        # Convert to tensor and return
         return (pil2tensor(image),)
 
 
