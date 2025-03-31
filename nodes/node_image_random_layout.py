@@ -14,7 +14,7 @@ class BK_ImageRandomLayout:
             "required": {
                 "path_image": ("IMAGE",),
                 "image_list": ("IMAGE_LIST",),
-                "placement_mode": (["Random", "Isometric"],),
+                "placement_mode": (["Random", "Isometric", "Sequential"],),
             },
             "optional": {
                 "placement_count": ("INT", {"default": 5, "min": 1, "max": 100, "step": 1}),
@@ -32,8 +32,11 @@ class BK_ImageRandomLayout:
     FUNCTION = "exec"
     OUTPUT_NODE = False
     DESCRIPTION = """
-Extract black lines from path_image as a path, and randomly scatter batch images along this path.
-从 path_image 中提取黑色线条作为路径，并将 image_list 中的图像随机散布在该路径上。
+Extract black lines from path_image as a path, and scatter batch images along this path.
+从 path_image 中提取黑色线条作为路径，并将 image_list 中的图像散布在该路径上。
+- Random: 随机选择图片放置，确保分布均匀
+- Isometric: 沿路径等距离放置图片
+- Sequential: 按照输入图片的顺序循环放置
 """
 
     @staticmethod
@@ -100,13 +103,15 @@ Extract black lines from path_image as a path, and randomly scatter batch images
             x, y = point
             draw.point((x, y), fill=(255, 0, 0, 255))
 
+        # Select points on the path
         if placement_mode == "Isometric":
+            # Isometric mode: Select points at equal distances along the path
             if len(path) >= placement_count:
                 indices = np.linspace(0, len(path) - 1, placement_count, dtype=int)
                 selected_points = path[indices]
             else:
                 selected_points = path
-        else:  # Random mode
+        else:  # Random or Sequential mode, both use random point selection
             if len(path) >= placement_count:
                 selected_points = path[np.random.choice(len(path), placement_count, replace=False)]
             else:
@@ -127,9 +132,51 @@ Extract black lines from path_image as a path, and randomly scatter batch images
 
         # Preprocessed image list
         pil_image_list = [tensor2pil(img).convert('RGBA') for img in image_list]
+        num_images = len(pil_image_list)
+        
+        # Select images based on different modes
+        if placement_mode == "Random":
+            # Improved random mode for more even distribution
+            # Avoid repetition if there are enough images
+            if num_images >= placement_count:
+                selected_images = random.sample(pil_image_list, placement_count)
+                image_indices = list(range(placement_count))
+                random.shuffle(image_indices)  # Randomize order
+            else:
+                # Ensure each image is used at least once before repeating
+                base_images = pil_image_list.copy()
+                selected_images = []
+                
+                # First ensure each image is used at least once
+                while len(selected_images) < placement_count:
+                    if not base_images:  # If all images used, reset
+                        base_images = pil_image_list.copy()
+                    
+                    # Select a random image
+                    img_index = random.randrange(len(base_images))
+                    selected_images.append(base_images.pop(img_index))
+                
+                image_indices = list(range(placement_count))
+                random.shuffle(image_indices)  # Randomize order
+        elif placement_mode == "Sequential":
+            # Sequential mode: Place images in order, looping if needed
+            selected_images = []
+            for i in range(placement_count):
+                img_index = i % num_images  # Loop through image list
+                selected_images.append(pil_image_list[img_index])
+            image_indices = list(range(placement_count))  # Preserve order
+        else:  # Isometric mode
+            # For compatibility, maintain original random selection
+            selected_images = []
+            image_indices = []
+            for _ in range(placement_count):
+                img_index = random.randrange(num_images)
+                selected_images.append(pil_image_list[img_index])
+                image_indices.append(_)
 
-        for point in selected_points:
-            pil_img = random.choice(pil_image_list)
+        # Place images
+        for i, point in enumerate(selected_points):
+            pil_img = selected_images[image_indices[i % len(image_indices)]]
             
             x, y = point
             x += random.uniform(-max_offset, max_offset)
@@ -148,7 +195,7 @@ Extract black lines from path_image as a path, and randomly scatter batch images
             canvas.alpha_composite(pil_img, (paste_x, paste_y))
             canvas_with_path.alpha_composite(pil_img, (paste_x, paste_y))
 
-        print(f"[BK_ImageRandomLayout] ○ OUTPUT Placed {placement_count} images on canvas")
+        print(f"[BK_ImageRandomLayout] ○ OUTPUT Placed {placement_count} images on canvas using {placement_mode} mode")
         result = pil2tensor(canvas)
         result_with_path = pil2tensor(canvas_with_path)
         points_preview_tensor = pil2tensor(points_preview)
