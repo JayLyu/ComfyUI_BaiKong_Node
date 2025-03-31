@@ -90,6 +90,17 @@ class BK_Img2Color:
         
         # Perform caseless comparison for exclusion
         return [color for color in colors if color.lower() not in excluded]
+        
+    def remove_duplicate_colors(self, colors: List[str]) -> List[str]:
+        """Remove duplicate colors while preserving order"""
+        seen = set()
+        unique_colors = []
+        for color in colors:
+            # Use lowercase for comparison but keep original case in result
+            if color.lower() not in seen:
+                seen.add(color.lower())
+                unique_colors.append(color)
+        return unique_colors
 
     def extract_colors(self, image: torch.Tensor, num_colors: int, max_iterations: int) -> List[Tuple[int, int, int]]:
         """Extract dominant colors from image using K-means clustering"""
@@ -187,6 +198,9 @@ class BK_Img2Color:
         # Convert to hex format
         hex_colors = [self.rgb_to_hex(color) for color in rgb_colors]
         
+        # Remove any duplicate colors
+        hex_colors = self.remove_duplicate_colors(hex_colors)
+        
         # Filter excluded colors
         filtered_colors = self.filter_excluded_colors(hex_colors, excluded)
         if len(filtered_colors) < len(hex_colors):
@@ -207,11 +221,14 @@ class BK_Img2Color:
         else:
             selected_color = filtered_colors[select_color - 1]  # 1-based indexing
         
-        print(f"[BK_Img2Color] ○ OUTPUT Selected color: {selected_color}, All colors: {color_string}")
+        print(f"[BK_Img2Color] ○ OUTPUT Selected color: {selected_color}")
+        print(f"[BK_Img2Color] ○ OUTPUT All colors ({len(filtered_colors)}): {color_string}")
         
         # Return results
         return {
-            "ui": {"text": (color_string, selected_color)}, 
+            "ui": {
+                "text": (color_string, selected_color)
+            }, 
             "result": (color_string, selected_color)
         }
 
