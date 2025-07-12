@@ -1,14 +1,15 @@
 [project]
 name = "comfyui_baikong_node"
 description = "Advanced color manipulation and image processing nodes for ComfyUI: color extraction, contrast analysis, gradient generation, and image layout."
-version = "1.4.1"
+version = "1.4.2"
 license = { file = "LICENSE" }
 dynamic = ["dependencies"]
 [tool.setuptools.dynamic]
-dependencies = {file = ["requirements.txt"]}
+dependencies = ["scikit_learn>=1.4.0",]
 
 [project.urls]
 Repository = "https://github.com/JayLyu/ComfyUI_BaiKong_Node"
+Documentation = "https://github.com/JayLyu/ComfyUI_BaiKong_Node/wiki"
 #  Used by Comfy Registry https://comfyregistry.org
 
 [tool.comfy]

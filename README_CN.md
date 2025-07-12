@@ -4,7 +4,7 @@
 
 这是处理图像视觉特征（颜色、布局）的插件。
 
-![cover](./workflow/Workflow.png)
+![cover](./examples/ColorProcessing.png)
 
 ## Wiki
 

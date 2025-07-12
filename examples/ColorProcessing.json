@@ -1,17 +1,19 @@
 {
+  "id": "bb6843f1-4f81-4636-baca-28f713432bd4",
+  "revision": 0,
   "last_node_id": 46,
   "last_link_id": 44,
   "nodes": [
     {
       "id": 32,
       "type": "BK_ColorLimit",
-      "pos": {
-        "0": 1130,
-        "1": 1640
-      },
+      "pos": [
+        1130,
+        1640
+      ],
       "size": [
         315,
-        192
+        216
       ],
       "flags": {},
       "order": 5,
@@ -20,33 +22,33 @@
         {
           "name": "hex_color",
           "type": "STRING",
-          "link": 28,
           "widget": {
             "name": "hex_color"
-          }
+          },
+          "link": 28
         }
       ],
       "outputs": [
         {
           "name": "STRING",
           "type": "STRING",
+          "slot_index": 0,
           "links": [
             29
-          ],
-          "shape": 3,
-          "slot_index": 0
+          ]
         },
         {
           "name": "PREVIEW",
           "type": "IMAGE",
+          "slot_index": 1,
           "links": [
             30
-          ],
-          "shape": 3,
-          "slot_index": 1
+          ]
         }
       ],
       "properties": {
+        "cnr_id": "comfyui_baikong_node",
+        "ver": "646c9620ae74efbfe6dbff812c229754e24bdf99",
         "Node name for S&R": "BK_ColorLimit"
       },
       "widgets_values": [
@@ -54,19 +56,18 @@
         0.18,
         0.6900000000000001,
         0.34,
-        0.86,
-        "#6bdb59"
+        0.86
       ]
     },
     {
       "id": 33,
       "type": "ShowText|pysssss",
-      "pos": {
-        "0": 1480,
-        "1": 1540
-      },
+      "pos": [
+        1480,
+        1540
+      ],
       "size": [
-        222.42756511763696,
+        222.4275665283203,
         76
       ],
       "flags": {},
@@ -76,39 +77,37 @@
         {
           "name": "text",
           "type": "STRING",
-          "link": 29,
-          "widget": {
-            "name": "text"
-          }
+          "link": 29
         }
       ],
       "outputs": [
         {
           "name": "STRING",
+          "shape": 6,
           "type": "STRING",
+          "slot_index": 0,
           "links": [
             31,
             34
-          ],
-          "shape": 6,
-          "slot_index": 0
+          ]
         }
       ],
       "properties": {
+        "cnr_id": "comfyui-custom-scripts",
+        "ver": "aac13aa7ce35b07d43633c3bbe654a38c00d74f5",
         "Node name for S&R": "ShowText|pysssss"
       },
       "widgets_values": [
-        "",
-        "#6bdb59"
+        "#72db5e"
       ]
     },
     {
       "id": 34,
       "type": "PreviewImage",
-      "pos": {
-        "0": 1480,
-        "1": 1680
-      },
+      "pos": [
+        1480,
+        1680
+      ],
       "size": [
         210,
         246
@@ -125,19 +124,22 @@
       ],
       "outputs": [],
       "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.3.43",
         "Node name for S&R": "PreviewImage"
-      }
+      },
+      "widgets_values": []
     },
     {
       "id": 35,
       "type": "BK_ColorContrast",
-      "pos": {
-        "0": 1750,
-        "1": 1650
-      },
+      "pos": [
+        1750,
+        1650
+      ],
       "size": [
-        313.49402996138747,
-        168
+        313.4940185546875,
+        192
       ],
       "flags": {},
       "order": 14,
@@ -146,49 +148,48 @@
         {
           "name": "bg_hex_color",
           "type": "STRING",
-          "link": 31,
           "widget": {
             "name": "bg_hex_color"
-          }
+          },
+          "link": 31
         }
       ],
       "outputs": [
         {
           "name": "BG_COLOR",
           "type": "STRING",
-          "links": [],
-          "shape": 3,
-          "slot_index": 0
+          "slot_index": 0,
+          "links": []
         },
         {
           "name": "TEXT_COLOR",
           "type": "STRING",
-          "links": [],
-          "shape": 3,
-          "slot_index": 1
+          "slot_index": 1,
+          "links": []
         }
       ],
       "properties": {
+        "cnr_id": "comfyui_baikong_node",
+        "ver": "646c9620ae74efbfe6dbff812c229754e24bdf99",
         "Node name for S&R": "BK_ColorContrast"
       },
       "widgets_values": [
         "#FF0036",
         "AA",
         "#ffffff",
-        "#000000",
-        "BACKGROUND(#6bdb59)\nTEXT(#000000)"
+        "#000000"
       ]
     },
     {
       "id": 38,
       "type": "BK_ColorLuminance",
-      "pos": {
-        "0": 1750,
-        "1": 1410
-      },
+      "pos": [
+        1750,
+        1410
+      ],
       "size": [
         315,
-        168
+        192
       ],
       "flags": {},
       "order": 15,
@@ -197,48 +198,47 @@
         {
           "name": "bg_hex_color",
           "type": "STRING",
-          "link": 34,
           "widget": {
             "name": "bg_hex_color"
-          }
+          },
+          "link": 34
         }
       ],
       "outputs": [
         {
           "name": "BG_COLOR",
           "type": "STRING",
-          "links": null,
-          "shape": 3
+          "links": null
         },
         {
           "name": "TEXT_COLOR",
           "type": "STRING",
-          "links": null,
-          "shape": 3
+          "links": null
         }
       ],
       "properties": {
+        "cnr_id": "comfyui_baikong_node",
+        "ver": "646c9620ae74efbfe6dbff812c229754e24bdf99",
         "Node name for S&R": "BK_ColorLuminance"
       },
       "widgets_values": [
         "#FF0036",
         0.65,
         "#ffffff",
-        "#000000",
-        "BACKGROUND(#6bdb59)\nTEXT(#ffffff)"
+        "#000000"
       ]
     },
     {
       "id": 41,
       "type": "BK_GradientImage",
-      "pos": {
-        "0": 1390,
-        "1": 980
-      },
-      "size": {
-        "0": 315,
-        "1": 202
-      },
+      "pos": [
+        1390,
+        980
+      ],
+      "size": [
+        315,
+        202
+      ],
       "flags": {},
       "order": 6,
       "mode": 0,
@@ -246,24 +246,25 @@
         {
           "name": "hex_color",
           "type": "STRING",
-          "link": 38,
           "widget": {
             "name": "hex_color"
-          }
+          },
+          "link": 38
         }
       ],
       "outputs": [
         {
           "name": "IMAGE",
           "type": "IMAGE",
+          "slot_index": 0,
           "links": [
             39
-          ],
-          "shape": 3,
-          "slot_index": 0
+          ]
         }
       ],
       "properties": {
+        "cnr_id": "comfyui_baikong_node",
+        "ver": "646c9620ae74efbfe6dbff812c229754e24bdf99",
         "Node name for S&R": "BK_GradientImage"
       },
       "widgets_values": [
@@ -279,14 +280,14 @@
     {
       "id": 45,
       "type": "BK_GradientImage",
-      "pos": {
-        "0": 1400,
-        "1": 460
-      },
-      "size": {
-        "0": 315,
-        "1": 202
-      },
+      "pos": [
+        1400,
+        460
+      ],
+      "size": [
+        315,
+        202
+      ],
       "flags": {},
       "order": 8,
       "mode": 0,
@@ -294,24 +295,25 @@
         {
           "name": "hex_color",
           "type": "STRING",
-          "link": 43,
           "widget": {
             "name": "hex_color"
-          }
+          },
+          "link": 43
         }
       ],
       "outputs": [
         {
           "name": "IMAGE",
           "type": "IMAGE",
+          "slot_index": 0,
           "links": [
             44
-          ],
-          "shape": 3,
-          "slot_index": 0
+          ]
         }
       ],
       "properties": {
+        "cnr_id": "comfyui_baikong_node",
+        "ver": "646c9620ae74efbfe6dbff812c229754e24bdf99",
         "Node name for S&R": "BK_GradientImage"
       },
       "widgets_values": [
@@ -327,10 +329,10 @@
     {
       "id": 39,
       "type": "BK_GradientImage",
-      "pos": {
-        "0": 1400,
-        "1": 723
-      },
+      "pos": [
+        1400,
+        723
+      ],
       "size": [
         315,
         202
@@ -342,24 +344,25 @@
         {
           "name": "hex_color",
           "type": "STRING",
-          "link": 41,
           "widget": {
             "name": "hex_color"
-          }
+          },
+          "link": 41
         }
       ],
       "outputs": [
         {
           "name": "IMAGE",
           "type": "IMAGE",
+          "slot_index": 0,
           "links": [
             42
-          ],
-          "shape": 3,
-          "slot_index": 0
+          ]
         }
       ],
       "properties": {
+        "cnr_id": "comfyui_baikong_node",
+        "ver": "646c9620ae74efbfe6dbff812c229754e24bdf99",
         "Node name for S&R": "BK_GradientImage"
       },
       "widgets_values": [
@@ -375,13 +378,13 @@
     {
       "id": 46,
       "type": "PreviewImage",
-      "pos": {
-        "0": 1770,
-        "1": 460
-      },
+      "pos": [
+        1770,
+        460
+      ],
       "size": [
-        166.63342175826233,
-        201.45916001027308
+        166.6334228515625,
+        246
       ],
       "flags": {},
       "order": 13,
@@ -395,19 +398,22 @@
       ],
       "outputs": [],
       "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.3.43",
         "Node name for S&R": "PreviewImage"
-      }
+      },
+      "widgets_values": []
     },
     {
       "id": 44,
       "type": "PreviewImage",
-      "pos": {
-        "0": 1772,
-        "1": 723
-      },
+      "pos": [
+        1772,
+        723
+      ],
       "size": [
-        171.93676433638734,
-        203.96454438527314
+        171.936767578125,
+        246
       ],
       "flags": {},
       "order": 12,
@@ -421,18 +427,21 @@
       ],
       "outputs": [],
       "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.3.43",
         "Node name for S&R": "PreviewImage"
-      }
+      },
+      "widgets_values": []
     },
     {
       "id": 42,
       "type": "PreviewImage",
-      "pos": {
-        "0": 1774,
-        "1": 991
-      },
+      "pos": [
+        1774,
+        991
+      ],
       "size": [
-        173.29644871138726,
+        173.29644775390625,
         246
       ],
       "flags": {},
@@ -447,20 +456,23 @@
       ],
       "outputs": [],
       "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.3.43",
         "Node name for S&R": "PreviewImage"
-      }
+      },
+      "widgets_values": []
     },
     {
       "id": 18,
       "type": "BK_Img2Color",
-      "pos": {
-        "0": 489.33953857421875,
-        "1": 1107.69384765625
-      },
-      "size": {
-        "0": 315,
-        "1": 216
-      },
+      "pos": [
+        489.33953857421875,
+        1107.69384765625
+      ],
+      "size": [
+        315,
+        216
+      ],
       "flags": {},
       "order": 1,
       "mode": 0,
@@ -475,23 +487,23 @@
         {
           "name": "COLORS",
           "type": "STRING",
+          "slot_index": 0,
           "links": [
             15
-          ],
-          "slot_index": 0,
-          "shape": 3
+          ]
         },
         {
           "name": "SELECT_COLOR",
           "type": "STRING",
+          "slot_index": 1,
           "links": [
             37
-          ],
-          "shape": 3,
-          "slot_index": 1
+          ]
         }
       ],
       "properties": {
+        "cnr_id": "comfyui_baikong_node",
+        "ver": "646c9620ae74efbfe6dbff812c229754e24bdf99",
         "Node name for S&R": "BK_Img2Color"
       },
       "widgets_values": [
@@ -499,21 +511,20 @@
         false,
         80,
         "",
-        2,
-        "#98abf1, #7bfc67,#7bfc67"
+        2
       ]
     },
     {
       "id": 19,
       "type": "LoadImage",
-      "pos": {
-        "0": 16,
-        "1": 1101
-      },
-      "size": {
-        "0": 315,
-        "1": 314
-      },
+      "pos": [
+        16,
+        1101
+      ],
+      "size": [
+        315,
+        314
+      ],
       "flags": {},
       "order": 0,
       "mode": 0,
@@ -522,20 +533,20 @@
         {
           "name": "IMAGE",
           "type": "IMAGE",
+          "slot_index": 0,
           "links": [
             14
-          ],
-          "slot_index": 0,
-          "shape": 3
+          ]
         },
         {
           "name": "MASK",
           "type": "MASK",
-          "links": null,
-          "shape": 3
+          "links": null
         }
       ],
       "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.3.43",
         "Node name for S&R": "LoadImage"
       },
       "widgets_values": [
@@ -546,13 +557,13 @@
     {
       "id": 43,
       "type": "BK_ColorSelector",
-      "pos": {
-        "0": 678.1456298828125,
-        "1": 649.0523071289062
-      },
+      "pos": [
+        678.1456298828125,
+        649.0523071289062
+      ],
       "size": [
-        223.57255808638752,
-        144
+        223.5725555419922,
+        174
       ],
       "flags": {},
       "order": 4,
@@ -561,43 +572,43 @@
         {
           "name": "hex_colors",
           "type": "STRING",
-          "link": 40,
           "widget": {
             "name": "hex_colors"
-          }
+          },
+          "link": 40
         }
       ],
       "outputs": [
         {
           "name": "STRING",
           "type": "STRING",
+          "slot_index": 0,
           "links": [
             41,
             43
-          ],
-          "shape": 3,
-          "slot_index": 0
+          ]
         }
       ],
       "properties": {
+        "cnr_id": "comfyui_baikong_node",
+        "ver": "646c9620ae74efbfe6dbff812c229754e24bdf99",
         "Node name for S&R": "BK_ColorSelector"
       },
       "widgets_values": [
         "#FF0036, #FF5000, #0065ff, #3D7FFF",
         ",",
-        1,
-        "#98abf1"
+        1
       ]
     },
     {
       "id": 20,
       "type": "ShowText|pysssss",
-      "pos": {
-        "0": 678.1456298828125,
-        "1": 859.0523071289062
-      },
+      "pos": [
+        678.1456298828125,
+        859.0523071289062
+      ],
       "size": [
-        222.42756511763696,
+        222.4275665283203,
         76
       ],
       "flags": {},
@@ -607,40 +618,38 @@
         {
           "name": "text",
           "type": "STRING",
-          "link": 15,
-          "widget": {
-            "name": "text"
-          }
+          "link": 15
         }
       ],
       "outputs": [
         {
           "name": "STRING",
+          "shape": 6,
           "type": "STRING",
+          "slot_index": 0,
           "links": [
             40
-          ],
-          "shape": 6,
-          "slot_index": 0
+          ]
         }
       ],
       "properties": {
+        "cnr_id": "comfyui-custom-scripts",
+        "ver": "aac13aa7ce35b07d43633c3bbe654a38c00d74f5",
         "Node name for S&R": "ShowText|pysssss"
       },
       "widgets_values": [
-        "",
-        "#98abf1, #7bfc67"
+        "#93a6f5, #83fc6d"
       ]
     },
     {
       "id": 31,
       "type": "ShowText|pysssss",
-      "pos": {
-        "0": 709.1456298828125,
-        "1": 1457.052490234375
-      },
+      "pos": [
+        709.1456298828125,
+        1457.052490234375
+      ],
       "size": [
-        222.42756511763696,
+        222.4275665283203,
         76
       ],
       "flags": {},
@@ -650,30 +659,28 @@
         {
           "name": "text",
           "type": "STRING",
-          "link": 37,
-          "widget": {
-            "name": "text"
-          }
+          "link": 37
         }
       ],
       "outputs": [
         {
           "name": "STRING",
+          "shape": 6,
           "type": "STRING",
+          "slot_index": 0,
           "links": [
             28,
             38
-          ],
-          "shape": 6,
-          "slot_index": 0
+          ]
         }
       ],
       "properties": {
+        "cnr_id": "comfyui-custom-scripts",
+        "ver": "aac13aa7ce35b07d43633c3bbe654a38c00d74f5",
         "Node name for S&R": "ShowText|pysssss"
       },
       "widgets_values": [
-        "",
-        "#7bfc67"
+        "#83fc6d"
       ]
     }
   ],
@@ -801,10 +808,11 @@
   ],
   "groups": [
     {
+      "id": 1,
       "title": "Get Color",
       "bounding": [
-        435,
-        373,
+        440,
+        380,
         578,
         1586
       ],
@@ -813,10 +821,11 @@
       "flags": {}
     },
     {
+      "id": 2,
       "title": "Draw Image",
       "bounding": [
-        1050,
-        370,
+        1060,
+        380,
         1135,
         881
       ],
@@ -825,10 +834,11 @@
       "flags": {}
     },
     {
+      "id": 3,
       "title": "Color Calculation",
       "bounding": [
-        1051,
-        1293,
+        1060,
+        1300,
         1135,
         663
       ],
@@ -840,12 +850,13 @@
   "config": {},
   "extra": {
     "ds": {
-      "scale": 0.4665073802097333,
+      "scale": 0.6830134553650709,
       "offset": [
-        223.55823763244155,
-        4.305154285078899
+        -150.46314021615294,
+        -235.6814718300781
       ]
-    }
+    },
+    "frontendVersion": "1.23.4"
   },
   "version": 0.4
 }

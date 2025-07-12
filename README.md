@@ -4,7 +4,7 @@
 
 This is the node that processes visual features such as color and layout of the image.
 
-![cover](./workflow/Workflow.png)
+![cover](./example/ColorProcessing.png)
 
 ## Wiki
 
